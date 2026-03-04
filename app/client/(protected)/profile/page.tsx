@@ -50,8 +50,6 @@ const Icons = {
 };
 
 
-
-
 export default function ClientProfilePage() {
   // Mock session data as requested
   const { data: session } = useSession()
@@ -191,7 +189,7 @@ export default function ClientProfilePage() {
       </div>
 
       {/* 2. BENTO GRID LAYOUT */}
-      <div className="grid grid-cols-1 2xl:grid-cols-12 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
         {/* Profile Details (Bento Piece 1) */}
         <div className="2xl:col-span-5 flex flex-col gap-6">
@@ -221,7 +219,7 @@ export default function ClientProfilePage() {
         </div>
 
         {/* Security & Password (Bento Piece 2) */}
-        <div className="2xl:col-span-7" id="security-section">
+        <div className="2xl:col-span-7 scroll-mt-24" id="security-section">
           <Card className="h-full border-white/15 bg-slate-900/60 backdrop-blur-xl">
             <div className="p-4 sm:p-6">
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-6 mb-8 sm:mb-12">
@@ -232,7 +230,7 @@ export default function ClientProfilePage() {
                 {!isChangingPassword && (
                   <Button variant="primary" onClick={() => setIsChangingPassword(true)} className="w-full sm:w-auto px-5 sm:px-8 py-3 sm:py-4">
                     <Icons.Key />
-                    Rotate Password
+                    Change password
                   </Button>
                 )}
               </div>
@@ -250,16 +248,16 @@ export default function ClientProfilePage() {
                     <div className="md:col-span-2">
                       <Input
                         type="password"
-                        label="Current Credentials"
+                        label="Current password"
                         isRequired
                         value={currentPassword}
                         onChange={(e) => setCurrentPassword(e.target.value)}
-                        placeholder="Verify your current identity"
+                        placeholder="Enter your current password"
                       />
                     </div>
                     <Input
                       type="password"
-                      label="New Password"
+                      label="New password"
                       isRequired
                       value={newPassword}
                       onChange={(e) => setNewPassword(e.target.value)}
@@ -268,7 +266,7 @@ export default function ClientProfilePage() {
                     />
                     <Input
                       type="password"
-                      label="Confirm Identity"
+                      label="Confirm new password"
                       isRequired
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
@@ -278,14 +276,14 @@ export default function ClientProfilePage() {
 
                   <div className="flex flex-col sm:flex-row gap-3 pt-6 border-t border-border-default">
                     <Button type="submit" isLoading={isLoading} className="flex-1 py-4">
-                      Update Security Key
+                      Save new password
                     </Button>
                     <Button
                       type="button"
                       variant="outline"
                       onClick={() => { setIsChangingPassword(false); setFormError(''); }}
                     >
-                      Keep Current
+                      Cancel
                     </Button>
                   </div>
                 </form>
@@ -296,16 +294,16 @@ export default function ClientProfilePage() {
                       <Icons.Lock />
                     </div>
                     <div>
-                      <h4 className="font-bold text-text-primary text-base sm:text-lg">Multi-Layer Encryption</h4>
+                      <h4 className="font-bold text-text-primary text-base sm:text-lg">Your account security</h4>
                       <p className="text-sm text-text-muted mt-1 leading-relaxed">
-                        Your account is protected with enterprise-grade encryption. Change your password frequently to maximize defense.
+                        Your data is encrypted. Updating your password regularly helps keep your account secure.
                       </p>
                     </div>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-                    <SecurityMetric label="Login Health" value="Strong" status="healthy" />
-                    <SecurityMetric label="2FA Status" value="Inactive" status="warning" />
+                    <SecurityMetric label="Login security" value="Strong" status="healthy" />
+                    <SecurityMetric label="Two-step verification" value="Off (optional)" status="warning" />
                   </div>
                 </div>
               )}

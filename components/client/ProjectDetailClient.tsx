@@ -248,14 +248,14 @@ export default function ProjectDetailClient({ projectId }: ProjectDetailClientPr
       {/* Header */}
       <section id="overview" className="scroll-mt-24">
       <Card className="border-white/15 bg-slate-900/60 backdrop-blur-xl shadow-[0_24px_60px_rgba(2,6,23,0.55)]">
-        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-4">
+          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-4">
           <div className="flex-1">
             <h1 className="text-xl sm:text-2xl font-semibold text-text-primary mb-2">
               {project.name}
             </h1>
             <p className="text-text-muted">{project.description}</p>
           </div>
-          <StatusBadge status={project.status} type="project" />
+          <StatusBadge status={project.status} type="project" variant="dark" />
         </div>
 
         {/* Message Manager button */}
@@ -347,10 +347,10 @@ export default function ProjectDetailClient({ projectId }: ProjectDetailClientPr
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 mb-1">
+                    <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 mb-1">
                     <h3 className="text-sm font-medium text-text-primary">{milestone.title}</h3>
                     <div className="flex items-center gap-2">
-                      <StatusBadge status={milestone.status} type="milestone" />
+                      <StatusBadge status={milestone.status} type="milestone" variant="dark" />
                     </div>
                   </div>
                   <p className="text-sm text-text-muted mb-2">{milestone.description}</p>
@@ -421,7 +421,7 @@ export default function ProjectDetailClient({ projectId }: ProjectDetailClientPr
                       {format(new Date(payment.dueDate), 'MMM d, yyyy')}
                     </td>
                     <td className="py-3 px-4">
-                      <StatusBadge status={payment.status} type="payment" />
+                      <StatusBadge status={payment.status} type="payment" variant="dark" />
                     </td>
                     <td className="py-3 px-4">
                       {payment.status === 'PAID' ? (
@@ -451,7 +451,7 @@ export default function ProjectDetailClient({ projectId }: ProjectDetailClientPr
                 </p>
                 <div className="mt-2 flex items-center justify-between">
                   <span className="text-sm text-text-primary">${payment.amount.toLocaleString()} {payment.currency}</span>
-                  <StatusBadge status={payment.status} type="payment" />
+                  <StatusBadge status={payment.status} type="payment" variant="dark" />
                 </div>
                 <div className="mt-2">
                   {payment.status === 'PAID' ? (
@@ -532,9 +532,9 @@ export default function ProjectDetailClient({ projectId }: ProjectDetailClientPr
             <div className="space-y-3 max-h-96 overflow-y-auto">
               {filteredRequests.map((request) => (
                 <div key={request.id} className="p-3 sm:p-4 border border-border-default rounded-lg">
-                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 mb-2">
+                    <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 mb-2">
                     <h4 className="text-sm font-medium text-text-primary">{request.title}</h4>
-                    <StatusBadge status={request.status} type="changeRequest" />
+                    <StatusBadge status={request.status} type="changeRequest" variant="dark" />
                   </div>
                   <p className="text-sm text-text-muted mb-2">{request.message}</p>
                   {request.impactSummary && (

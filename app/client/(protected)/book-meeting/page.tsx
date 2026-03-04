@@ -656,7 +656,7 @@ export default function BookMeetingPage() {
   /* ----------------------------- UI ----------------------------- */
 
   return (
-    <div className="bg-bg-page p-3 sm:p-4 md:p-6 font-sans">
+    <div className=" p-3 sm:p-4 md:p-6 font-sans">
       <div className="w-full mx-auto space-y-8">
 
         <header className="flex flex-col md:flex-row md:items-end justify-between gap-4">
@@ -667,7 +667,7 @@ export default function BookMeetingPage() {
               </span>
               <span className="text-xs font-bold tracking-wider uppercase">Meetech Portal</span>
             </div>
-            <h1 className="text-xl sm:text-2xl font-extrabold text-text-primary tracking-tight">
+            <h1 className="text-xl sm:text-4xl font-extrabold text-text-primary tracking-tight">
               Book A Meeting
             </h1>
             <p className="text-xs sm:text-sm text-text-muted mt-1 max-w-md">
@@ -680,8 +680,8 @@ export default function BookMeetingPage() {
           </div>
         </header>
 
-        <div className="grid grid-cols-1 2xl:grid-cols-12 gap-8">
-          <main className="2xl:col-span-8 space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <main className="md:col-span-2 space-y-6">
             <div className="bg-bg-surface rounded-3xl shadow-sm border border-border-default  overflow-hidden">
               <form onSubmit={handleSubmit}>
                 <div className="p-6 md:p-8 space-y-8">
@@ -745,7 +745,7 @@ export default function BookMeetingPage() {
   relative h-12 md:h-14 flex flex-col items-center border-[0.4px] border-accent/20 justify-center transition-all bg-bg-surface
   ${selectable ? 'hover:bg-accent-muted hover:text-inverse cursor-pointer' : 'cursor-not-allowed opacity-25'}
   ${selected
-                                ? 'z-10 bg-blue-600 text-text-primary ring-2 ring-accent ring-inset hover:bg-accent'
+                                  ? 'z-10 bg-blue-600 text-text-primary ring-2 ring-accent ring-inset hover:bg-accent'
                                   : 'text-text-body'}
 `}
                             >
@@ -869,7 +869,7 @@ export default function BookMeetingPage() {
             </div>
           </main>
 
-          <aside className="2xl:col-span-4 space-y-6">
+          <aside className="md:col-span-1 space-y-6">
             <div className="bg-bg-surface rounded-3xl p-6 lg:p-4 border border-border-default shadow-sm 2xl:sticky 2xl:top-8">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="font-bold text-text-primary flex items-center gap-2">
@@ -937,18 +937,18 @@ export default function BookMeetingPage() {
                   If you have an urgent issue that needs immediate attention, contact support directly.
                 </p>
                 <Link
-                href="/client/dashboard?modal=messages"
-                 className="text-xs font-bold bg-bg-surface text-accent px-4 py-2 rounded-xl hover:bg-text-primary hover:cursor-pointer transition-colors">
+                  href="/client/messages"
+                  className="text-xs font-bold bg-bg-surface text-accent px-4 py-2 rounded-xl hover:bg-text-primary hover:cursor-pointer transition-colors">
                   Contact Support
                 </Link>
               </div>
               <div className="absolute -right-4 -bottom-4 w-24 h-24 bg-accent-hover rounded-full blur-2xl opacity-50" />
-            </div>
-          </aside>
         </div>
-      </div>
+      </aside>
     </div>
+      </div >
+    </div >
   );
 }
 
- 
+

@@ -11,7 +11,7 @@ import {
   FilePlus,
   CheckCircle2,
   ChevronRight,
-  ChevronDown,
+  ChevronDown, FolderKanban,
   LogOut
 } from 'lucide-react';
 import { useSession, signOut } from 'next-auth/react';
@@ -188,16 +188,15 @@ type GlobalNavItemProps = {
 
 const GlobalNavItem = ({ icon: Icon, active, label, onClick }: GlobalNavItemProps) => {
   return (
-    <button onClick={onClick} type="button" title={label}>
+    <button onClick={onClick} type="button" className="w-full">
       <div
-        className={`relative group p-3 rounded-2xl transition-all duration-300 ${
-          active
+        className={`flex items-center gap-3 w-full px-4 py-3 rounded-2xl transition-all duration-300 ${active
             ? "text-blue-300 border border-blue-400/20 bg-transparent"
             : "text-text-disabled hover:text-text-primary hover:bg-white/10 border border-transparent hover:border-white/10"
-        }`}
+          }`}
       >
-        <Icon size={22} />
-        <span className="absolute left-14 text-text-primary bg-bg-surface border border-border-default text-xs px-2 py-1 rounded shadow-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">
+        <Icon size={20} />
+        <span className="text-sm font-medium whitespace-nowrap">
           {label}
         </span>
       </div>
@@ -233,18 +232,21 @@ export default function App({ children }: { children: React.ReactNode; user?: { 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const pathname = usePathname();
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const modal = searchParams.get('modal');
 
-  const openDashboardModal = (type: 'booking' | 'messages' | 'profile') => {
-    router.push(`/client/dashboard?modal=${type}`);
-  };
 
-  const closeDashboardModal = () => {
-    router.push('/client/dashboard');
-  };
+  // const searchParams = useSearchParams();
+  // const modal = searchParams.get('modal');
 
-  const isDashboard = pathname === '/client/dashboard';
+  // const openDashboardModal = (type: 'booking' | 'messages' | 'profile' | 'projects') => {
+  //   router.push(`/client/dashboard?modal=${type}`);
+  // };
+
+  // const closeDashboardModal = () => {
+  //   router.push('/client/dashboard');
+  // };
+
+  // const isDashboard = pathname === '/client/dashboard';
+  const isActive = (path: string) => pathname === path;
 
   const handleSignOut = async () => {
     if (isSigningOut) return;
@@ -280,12 +282,12 @@ export default function App({ children }: { children: React.ReactNode; user?: { 
             <Image src="/icon.png" alt="Meetech" width={96} height={28} className="h-7 w-auto light-logo" />
             <Image src="/iconlight.png" alt="Meetech" width={96} height={28} className="h-7 w-auto dark-logo" />
           </button>
-          <span className="text-[11px] uppercase tracking-[0.2em] text-blue-300/90">Always Dark</span>
+          <span className="text-[11px] uppercase tracking-[0.2em] text-blue-300/90">Client Portal</span>
         </header>
 
         {/* 1. GLOBAL NAVIGATION (DARK SIDEBAR) */}
-        <aside className="hidden lg:flex w-20 bg-slate-950/65 backdrop-blur-2xl flex-col items-center py-6 border-r border-white/10 shrink-0 z-20 shadow-[16px_0_40px_rgba(2,6,23,0.45)]">
-          <div className="relative mb-10">
+        <aside className="hidden lg:flex w-64 bg-slate-950/65 backdrop-blur-2xl flex-col py-6 px-4 border-r border-white/10 shrink-0 z-20 shadow-[16px_0_40px_rgba(2,6,23,0.45)]">
+          <div className="relative mb-8">
             <Image
               src="/icon.png"
               alt="Meetech"
@@ -302,36 +304,42 @@ export default function App({ children }: { children: React.ReactNode; user?: { 
             />
           </div>
 
-          <nav className="flex flex-col gap-4 flex-1">
+          <nav className="flex flex-col gap-3 flex-1">
             <GlobalNavItem
               icon={LayoutDashboard}
-              label="My Projects"
-              active={isDashboard && !modal}
+              label="Dashboard"
+              active={isActive('/client/dashboard')}
               onClick={() => router.push('/client/dashboard')}
             />
             <GlobalNavItem
               icon={CalendarPlus}
               label="Book Your Meeting"
-              active={isDashboard && modal === 'booking'}
-              onClick={() => openDashboardModal('booking')}
-            />
+              active={isActive('/client/booking')}
+              onClick={() => router.push('/client/book-meeting')}            />
             <GlobalNavItem
               icon={MessageSquare}
               label="Messages"
-              active={isDashboard && modal === 'messages'}
-              onClick={() => openDashboardModal('messages')}
-            />
+              active={isActive('/client/messages')}
+              onClick={() => router.push('/client/messages')}            />
+
+            <GlobalNavItem
+              icon={FolderKanban}
+              label="My Projects"
+              active={isActive('/client/projects')}
+              onClick={() => router.push('/client/projects')} />
+
             <GlobalNavItem
               icon={UserCircle}
               label="My Profile"
-              active={isDashboard && modal === 'profile'}
-              onClick={() => openDashboardModal('profile')}
-            />
+              active={isActive('/client/profile')}
+              onClick={() => router.push('/client/profile')} />
+           
+          
           </nav>
 
           <div className="flex flex-col gap-4 mt-auto">
             <button
-              className="p-3 rounded-xl text-blue-300/90 bg-blue-500/10 border border-blue-400/20"
+              className="p-3 flex  rounded-xl text-blue-300/90 bg-blue-500/10 border border-blue-400/20"
               title="Dark mode is locked"
             >
               <div className="h-[22px] w-[22px] rounded-full bg-blue-400/80 shadow-[0_0_20px_rgba(59,130,246,0.7)]" />
@@ -340,29 +348,41 @@ export default function App({ children }: { children: React.ReactNode; user?: { 
               onClick={handleSignOut}
               disabled={isSigningOut}
               title="Sign Out"
-              className="p-3 rounded-xl text-text-disabled hover:text-red-400 hover:bg-red-500/10 transition-all disabled:opacity-50"
+              className="p-3 flex  rounded-xl text-text-disabled hover:text-red-400 hover:bg-red-500/10 transition-all disabled:opacity-50"
             >
-              <LogOut size={22} />
+              <LogOut size={22} /> <span className=' text-sm ml-3'>Log Out </span>
             </button>
             <button
               type="button"
-              onClick={() => openDashboardModal('profile')}
+              onClick={() => router.push('/client/profile')}
+              className="flex items-center  border-t-[0.5px] border-t-accent  gap-3 group p-3 transition-colors hover:bg-white/5 w-full text-left"
               title="My Profile"
             >
-              <div className="relative w-10 h-10 rounded-full overflow-hidden mb-4 bg-accent text-text-inverse flex items-center justify-center text-lg font-bold">
+              {/* Avatar Circle */}
+              <div className="relative shrink-0 w-10 h-10 rounded-full overflow-hidden bg-accent text-text-inverse flex items-center justify-center text-sm font-bold shadow-sm ring-1 ring-white/10">
                 {session?.user.name
                   ?.split(" ")
                   .filter(Boolean)
                   .map((n, i, arr) => (i === 0 || i === arr.length - 1 ? n[0] : ""))
                   .join("")
-                  .toUpperCase()}
+                  .toUpperCase() || "U"}
+              </div>
+
+              {/* User Info - Hidden on collapsed sidebar, visible on desktop */}
+              <div className="flex flex-col overflow-hidden">
+                <span className="text-sm font-semibold text-text-inverse truncate group-hover:text-accent transition-colors">
+                  {session?.user.name || "User Name"}
+                </span>
+                <span className="text-xs text-text-inverse/50 truncate">
+                  {session?.user.email || "user@email.com"}
+                </span>
               </div>
             </button>
           </div>
         </aside>
 
         {/* 2. CONTEXTUAL SIDEBAR (VISIBLE ONLY ON DASHBOARD) */}
-        <aside
+        {/* <aside
           className={`w-80 bg-slate-950/45 backdrop-blur-xl border-r border-white/10 overflow-y-auto hidden xl:block transition-all duration-300 ${
             pathname !== "/client/dashboard" ? "opacity-50 pointer-events-none grayscale" : ""
           }`}
@@ -382,7 +402,7 @@ export default function App({ children }: { children: React.ReactNode; user?: { 
                   .join("")
                   .toUpperCase()}
               </div>
-              {/* Camera Icon */}
+             
               <button
                 onClick={() => fileInputRef.current?.click()}
                 className="relative bottom-10 z-50 -right-12 bg-accent-muted p-2 text-accent rounded-full shadow-md hover:bg-bg-subtle transition"
@@ -435,7 +455,7 @@ export default function App({ children }: { children: React.ReactNode; user?: { 
               </div>
             </div>
           </div>
-        </aside>
+        </aside> */}
 
         {/* 3. MAIN WORKSPACE */}
         <main className="flex-1 flex flex-col overflow-hidden relative pt-14 lg:pt-0 z-10">
@@ -463,12 +483,12 @@ export default function App({ children }: { children: React.ReactNode; user?: { 
                     />
                   </div>
                   <div className="py-2">
-                    <div onClick={() => { openDashboardModal('booking'); setIsActionMenuOpen(false); }}>
+                    <div onClick={() => { router.push('/client/book-meeting'); setIsActionMenuOpen(false); }}>
                       <ActionMenuItem icon={CalendarPlus} title="Book appointment" description="Request a new slot" />
                     </div>
                     <ActionMenuItem icon={FilePlus} title="Upload documents" description="PDF, PNG, JPG supported" />
                     <ActionMenuItem icon={CheckCircle2} title="Create task" description="Add to your personal list" />
-                    <div onClick={() => { openDashboardModal('messages'); setIsActionMenuOpen(false); }}>
+                    <div onClick={() => { router.push('/client/messages'); setIsActionMenuOpen(false); }}>
                       <ActionMenuItem icon={MessageSquare} title="Send Message" description="Ping the support team" />
                     </div>
                   </div>
@@ -487,51 +507,58 @@ export default function App({ children }: { children: React.ReactNode; user?: { 
       </div>
 
       {/* Mobile bottom navigation */}
-      <nav className="lg:hidden fixed bottom-0 inset-x-0 z-40 h-16 bg-slate-950/80 backdrop-blur-2xl border-t border-white/10 grid grid-cols-4 px-1 shadow-[0_-10px_30px_rgba(2,6,23,0.65)]">
+      <nav className="lg:hidden fixed bottom-0 inset-x-0 z-40 h-16 bg-slate-950/80 backdrop-blur-2xl border-t border-white/10 grid grid-cols-5 px-1 shadow-[0_-10px_30px_rgba(2,6,23,0.65)]">
         <button
           type="button"
           onClick={() => router.push('/client/dashboard')}
-          className={`flex flex-col items-center justify-center gap-1 rounded-xl text-[10px] transition-all ${
-            isDashboard && !modal ? 'bg-blue-600/20 text-blue-200 border border-blue-400/30' : 'text-text-disabled'
-          }`}
+          className={`flex flex-col items-center justify-center gap-1 rounded-xl text-[10px] transition-all `}
         >
           <LayoutDashboard size={18} />
           Home
         </button>
         <button
           type="button"
-          onClick={() => openDashboardModal('booking')}
-          className={`flex flex-col items-center justify-center gap-1 rounded-xl text-[10px] transition-all ${
-            isDashboard && modal === 'booking' ? 'bg-blue-600/20 text-blue-200 border border-blue-400/30' : 'text-text-disabled'
-          }`}
+          onClick={() => router.push('/client/book-meeting')}
+          className={`flex flex-col items-center justify-center gap-1 rounded-xl text-[10px] transition-all`}
         >
           <CalendarPlus size={18} />
           Booking
         </button>
         <button
           type="button"
-          onClick={() => openDashboardModal('messages')}
-          className={`flex flex-col items-center justify-center gap-1 rounded-xl text-[10px] transition-all ${
-            isDashboard && modal === 'messages' ? 'bg-blue-600/20 text-blue-200 border border-blue-400/30' : 'text-text-disabled'
-          }`}
+          onClick={() => router.push('/client/messages')}
+          className={`flex flex-col items-center justify-center gap-1 rounded-xl text-[10px] transition-all`}
         >
           <MessageSquare size={18} />
           Messages
         </button>
+
         <button
           type="button"
-          onClick={() => openDashboardModal('profile')}
-          className={`flex flex-col items-center justify-center gap-1 rounded-xl text-[10px] transition-all ${
-            isDashboard && modal === 'profile' ? 'bg-blue-600/20 text-blue-200 border border-blue-400/30' : 'text-text-disabled'
-          }`}
+          onClick={() => router.push('/client/projects')}
+          className={`flex flex-col items-center justify-center gap-1 rounded-xl text-[10px] transition-all`}
+        >
+          <FolderKanban size={18} />
+          Projects
+        </button>
+
+        <button
+          type="button"
+          onClick={() => router.push('/client/profile')}
+          className={`flex flex-col items-center justify-center gap-1 rounded-xl text-[10px] transition-all`}
         >
           <UserCircle size={18} />
           Profile
         </button>
+
+        
       </nav>
 
       {/* Dashboard Popups */}
-      {isDashboard && modal && (
+      {/* <main className="flex-1 overflow-y-auto p-8">
+        {children}
+      </main> */}
+      {/* {isDashboard && modal && (
         <div className="fixed inset-0 z-[140]">
           <div
             className="absolute inset-0 bg-black/70 backdrop-blur-md"
@@ -577,7 +604,7 @@ export default function App({ children }: { children: React.ReactNode; user?: { 
             </div>
           </div>
         </div>
-      )}
+      )} */}
     </>
   );
 }

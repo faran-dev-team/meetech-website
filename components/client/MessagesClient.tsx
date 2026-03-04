@@ -451,9 +451,9 @@ export default function MessagesClient({
       </p>
     </div>
   ) : (
-    <div className="flex flex-col h-full">
+    <div className="flex md:flex-row  flex-col h-full">
       {/* Thread Header */}
-      <div className="flex items-center gap-3 p-4 border-b border-white/10 bg-slate-950/80">
+      <div className="flex  gap-3 p-4 border-b border-white/10 bg-slate-950/80">
         {isAdmin && (
           <button
             onClick={() => setShowMobileThread(false)}
@@ -465,7 +465,7 @@ export default function MessagesClient({
         <div className="w-9 h-9 rounded-full bg-accent flex items-center justify-center text-text-inverse text-sm font-semibold flex-shrink-0">
           {getOtherPartyName(activeConversation).charAt(0).toUpperCase()}
         </div>
-        <div className="flex-1 min-w-0">
+          <div className="flex-1 w-full ">
           <h3 className="text-sm font-semibold text-text-primary truncate">
             {getOtherPartyName(activeConversation)}
           </h3>
@@ -478,14 +478,16 @@ export default function MessagesClient({
             Project: {activeConversation.project.name}
           </div>
         </div>
-        <span className="flex items-center gap-1.5 text-[10px] text-green-600 dark:text-green-400 font-semibold bg-green-50 dark:bg-green-500/10 px-2 py-1 rounded-full">
+        <span className="flex items-center gap-1.5 h-fit text-[10px] text-green-600 dark:text-green-400 font-semibold bg-green-50 dark:bg-green-500/10 px-2 py-1 rounded-full">
           <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
           Online
         </span>
       </div>
 
+<div className=' w-full'>
+
       {/* Messages Area */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-slate-900/30">
+      <div className="flex-2 overflow-y-auto p-4 h-[80%] space-y-3 bg-slate-900/30">
         {isLoadingMessages ? (
           <div className="flex items-center justify-center py-12">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-accent" />
@@ -576,7 +578,7 @@ export default function MessagesClient({
       </div>
 
       {/* Message Input */}
-      <div className="border-t border-white/10 bg-slate-950/80 p-3">
+      <div className="border-t relative bottom-0 border-white/10 bg-slate-950/80 p-3">
         <form
           onSubmit={sendMessage}
           className="flex items-end gap-2"
@@ -606,6 +608,7 @@ export default function MessagesClient({
           Press Enter to send, Shift+Enter for new line
         </p>
       </div>
+</div>
     </div>
   );
 

@@ -34,13 +34,13 @@ export default function ProjectCard({ project }: ProjectCardProps) {
 
   return (
     <Link href={`/client/projects/${project.id}`}>
-      <Card hoverable className="group relative overflow-hidden border-white/15 bg-gradient-to-br from-slate-900/80 to-slate-900/55 backdrop-blur-xl shadow-[0_24px_60px_rgba(2,6,23,0.55)]">
+      <Card hoverable className="group relative overflow-hidden border-white/15 bg-gradient-to-br from-slate-900/80 to-slate-900/55 backdrop-blur-xl shadow-[0_24px_60px_rgba(2,6,23,0.55)] h-[55vh]">
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(59,130,246,0.18),transparent_40%)]" />
         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 mb-4">
           <h3 className="text-lg sm:text-xl font-bold text-text-primary flex-1 pr-0 sm:pr-4 group-hover:text-accent transition-colors duration-200 break-words">
             {project.name}
           </h3>
-          <StatusBadge status={project.status} type="project" />
+          <StatusBadge status={project.status} type="project" variant="dark" />
         </div>
 
         <p className="text-sm text-text-muted mb-5 line-clamp-2 min-h-[40px]">
