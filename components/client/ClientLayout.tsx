@@ -338,12 +338,12 @@ export default function App({ children }: { children: React.ReactNode; user?: { 
           </nav>
 
           <div className="flex flex-col gap-4 mt-auto">
-            <button
+            {/* <button
               className="p-3 flex  rounded-xl text-blue-300/90 bg-blue-500/10 border border-blue-400/20"
               title="Dark mode is locked"
             >
               <div className="h-[22px] w-[22px] rounded-full bg-blue-400/80 shadow-[0_0_20px_rgba(59,130,246,0.7)]" />
-            </button>
+            </button> */}
             <button
               onClick={handleSignOut}
               disabled={isSigningOut}
