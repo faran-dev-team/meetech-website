@@ -57,7 +57,7 @@ export const LEGAL_CONTENT = {
       <p>We retain your personal data only for as long as necessary to fulfill the purposes outlined in this policy, typically for the duration of our business relationship and for a reasonable period thereafter for legal and accounting purposes.</p>
 
       <h4>Contact</h4>
-      <p>For privacy concerns or to exercise your rights, contact us at: <a href="mailto:meetechdevelopment@gmail.com">meetechdevelopment@gmail.com</a></p>
+      <p>For privacy concerns or to exercise your rights, contact us at: <a href="mailto:info@meetechdevelopment.com">info@meetechdevelopment.com</a></p>
     `
   },
   terms: {
@@ -144,7 +144,7 @@ export const LEGAL_CONTENT = {
       <p>We reserve the right to modify these terms at any time. Changes will be posted on this page with an updated revision date.</p>
 
       <h4>Contact</h4>
-      <p>For questions about these terms, contact us at: <a href="mailto:meetechdevelopment@gmail.com">meetechdevelopment@gmail.com</a></p>
+      <p>For questions about these terms, contact us at: <a href="mailto:info@meetechdevelopment.com">info@meetechdevelopment.com</a></p>
     `
   },
   cookies: {

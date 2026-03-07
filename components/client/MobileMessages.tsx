@@ -11,10 +11,10 @@ import {
   FiCheckCircle,
   FiPlus,
   FiSearch,
-  FiX, 
+  FiX,
 } from 'react-icons/fi';
 import Button from '@/components/ui/Button';
-import { ArrowLeft, ArrowRight, ChevronRight, Search, MessageSquareQuote } from 'lucide-react';
+import { ArrowRight, ChevronRight, Search } from 'lucide-react';
 
 interface Sender {
   id: string;
@@ -90,7 +90,6 @@ export default function MessagesClient({
   userRole,
 }: MessagesClientProps) {
   const [search, setSearch] = useState('');
-  const [showMobileView, setShowMobileView] = useState(false);
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [activeConversation, setActiveConversation] =
     useState<Conversation | null>(null);
@@ -128,12 +127,6 @@ export default function MessagesClient({
   //   );
   // }, []);
 
-  const handleBack = () => {
-    setShowMobileView(false);
-  };
-
-  console.log("activeConversation : ", activeConversation)
-
   const getManagerName = useCallback((conv: Conversation) => {
     if (conv.project.managers && conv.project.managers.length > 0) {
       return conv.project.managers.map((m) => m.name);
@@ -141,7 +134,6 @@ export default function MessagesClient({
     return conv.project.manager ? [conv.project.manager.name] : ['Manager'];
   }, []);
 
-  
   // const getOtherPartyName = useCallback(
   //   (conv: Conversation) => {
   //     return isAdmin ? conv.project.client.name : getManagerName(conv);
@@ -287,7 +279,6 @@ export default function MessagesClient({
   const openConversation = async (conv: Conversation) => {
     setActiveConversation(conv);
     setShowMobileThread(true);
-    setShowMobileView(true); // open thread on mobile
     await fetchMessages(conv.id);
     setIsNearBottom(true);
     setShowJumpToLatest(false);
@@ -560,21 +551,70 @@ export default function MessagesClient({
                   : ''
                   }`}
               >
-                <div className="flex gap-1 text-white">
-                  {conv.project.manager ? (
-                    <div
-                      className="w-7 h-7 rounded-full bg-accent flex items-center justify-center text-text-inverse text-[10px] font-semibold"
-                      title={conv.project.manager.name || 'Admin'}
-                    >
-                      {(conv.project.manager.name?.charAt(0).toUpperCase() || 'A')}
+                <div className="flex items-start gap-3">
+                  {/* Avatar */}
+                  {/* <div className="w-10 h-10 rounded-full bg-accent flex items-center justify-center text-text-inverse text-sm font-semibold shrink-0">
+                    {getOtherPartyName(conv).charAt(0).toUpperCase()}
+                  </div> */}
+
+                  <div className="flex gap-1">
+                    {/* {activeConversation.project.managers?.map((m) => (
+                      <div
+                        key={m.id}
+                        className="w-7 h-7 rounded-full bg-accent flex items-center justify-center text-text-inverse text-[10px] font-semibold"
+                        title={m.name}
+                      >
+                        {m.name.charAt(0).toUpperCase()}
+                      </div>
+                    ))} */}
+
+                    {conv.project.managers?.map((m) => (
+                      <div
+                        key={m.id}
+                        className="w-7 h-7 rounded-full bg-accent flex items-center justify-center text-text-inverse text-[10px] font-semibold"
+                        title={`${m.name} (${m.name ?? 'Admin'})`}
+                      >
+                        {m.name.charAt(0).toUpperCase()}
+                      </div>
+                    ))}
+
+                    {/* {conv.project.managers?.map((m) => (
+                      <div
+                        key={m.id}
+                        className="w-7 h-7 rounded-full bg-accent flex items-center justify-center text-text-inverse text-[10px] font-semibold"
+                        title={m.name}
+                      >
+                        {m.name.charAt(0).toUpperCase()}
+                      </div>
+                    ))} */}
+                  </div>
+
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between mb-0.5">
+                      <span className="text-sm font-semibold text-text-primary truncate">
+                        {getOtherPartyName(conv)}
+                      </span>
+                      <span className="text-xs text-text-muted ml-2 shrink-0">
+                        {formatConversationTime(conv.lastMessageAt)}
+                      </span>
                     </div>
-                  ) : (
-                    <div
-                      className="w-7 h-7 rounded-full bg-accent flex items-center justify-center text-white text-[10px] font-semibold"
-                      title="Admin"
-                    >
-                      A
-                    </div>
+                    <p className="text-xs font-medium text-accent truncate">
+                      {conv.project.name}
+                    </p>
+                    {conv.lastMessage && (
+                      <p className="text-xs text-text-muted truncate mt-0.5">
+                        {conv.lastMessage.sender.id === userId
+                          ? 'You: '
+                          : ''}
+                        {conv.lastMessage.content}
+                      </p>
+                    )}
+                  </div>
+                  {/* Unread badge */}
+                  {conv.unreadCount > 0 && (
+                    <span className="shrink-0 inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-accent rounded-full">
+                      {conv.unreadCount > 9 ? '9+' : conv.unreadCount}
+                    </span>
                   )}
                 </div>
               </button>
@@ -599,92 +639,91 @@ export default function MessagesClient({
     </div>
   ) : (
     <>
-      {/* Desktop View */}
-      <div className="hidden md:flex flex-col w-full h-full lg:h-[100vh]">
-        {/* Thread Header */}
-        <div className="sticky top-0 z-10 flex gap-3 p-4 border-b border-white/10 bg-slate-950 shrink-0
+    {/* Desktop View */}
+      <div className=" flex flex-col w-full h-full lg:h-[100vh]">
+      {/* Thread Header */}
+      <div className="sticky top-0 z-10 flex gap-3 p-4 border-b border-white/10 bg-slate-950 shrink-0
         ">
-          {isAdmin && (
-            <button
-              onClick={() => setShowMobileThread(false)}
-              type="button"
-              className="lg:hidden p-1.5 text-text-muted hover:text-text-primary rounded-lg hover:bg-bg-subtle transition-colors"
-              aria-label="Back to conversations"
-            >
-              <FiChevronLeft className="w-5 h-5" />
-            </button>
-          )}
-          <div className="w-9 h-9 rounded-full bg-accent flex items-center justify-center text-text-inverse text-sm font-semibold shrink-0">
-            {/* {getOtherPartyName(activeConversation).charAt(0).toUpperCase()} */}
-            <div className="flex gap-1">
-                {activeConversation.project.manager?.name.charAt(0).toUpperCase()}
-
-              {/* {activeConversation.project.managers?.map((m) => (
-                <div
-                  key={m.id}
-                  className="w-7 h-7 rounded-full bg-accent flex items-center justify-center text-text-inverse text-[10px] font-semibold"
-                  title={m.name}
-                >
-                  {(m.role?.charAt(0).toUpperCase() || 'A')} A               </div>
-              ))} */}
-
-            </div>
-          </div>
-          <div className="flex-1 min-w-0">
-            <h3 className="text-sm font-semibold text-text-primary truncate">
-              {getOtherPartyName(activeConversation)}
-            </h3>
-            <p className="text-xs text-text-muted truncate">
-              {isAdmin
-                ? activeConversation.project.name
-                : `${getOtherPartyName(activeConversation)} · Manager`}
-            </p>
-            <div className="mt-1 inline-flex items-center rounded-full border border-white/10 bg-slate-900/70 px-2 py-0.5 text-[10px] text-blue-200">
-              Project: {activeConversation.project.name}
-            </div>
-          </div>
-          <span className="flex items-center gap-1.5 h-fit text-[10px] text-green-600 dark:text-green-400 font-semibold bg-green-50 dark:bg-green-500/10 px-2 py-1 rounded-full">
-            <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
-            Online
-          </span>
-        </div>
-
-        {errorBanner && (
-          <div className="mx-4 mt-3 rounded-xl border border-red-500/25 bg-red-500/10 px-3 py-2 text-xs text-red-200 flex items-start justify-between gap-3">
-            <span className="leading-5">{errorBanner}</span>
-            <div className="flex items-center gap-2 shrink-0">
-              <button
-                type="button"
-                className="rounded-lg border border-white/10 bg-slate-950/40 px-2 py-1 text-[11px] text-text-primary hover:bg-white/5"
-                onClick={() => {
-                  setErrorBanner(null);
-                  fetchConversations();
-                  fetchMessages(activeConversation.id);
-                }}
-              >
-                Retry
-              </button>
-              <button
-                type="button"
-                className="rounded-lg p-1 text-text-muted hover:text-text-primary hover:bg-white/5"
-                onClick={() => setErrorBanner(null)}
-                aria-label="Dismiss error"
-              >
-                <FiX className="h-4 w-4" />
-              </button>
-            </div>
-          </div>
+        {isAdmin && (
+          <button
+            onClick={() => setShowMobileThread(false)}
+            type="button"
+            className="lg:hidden p-1.5 text-text-muted hover:text-text-primary rounded-lg hover:bg-bg-subtle transition-colors"
+            aria-label="Back to conversations"
+          >
+            <FiChevronLeft className="w-5 h-5" />
+          </button>
         )}
+        <div className="w-9 h-9 rounded-full bg-accent flex items-center justify-center text-text-inverse text-sm font-semibold shrink-0">
+          {/* {getOtherPartyName(activeConversation).charAt(0).toUpperCase()} */}
+          <div className="flex gap-1">
+            {activeConversation.project.managers?.map((m) => (
+              <div
+                key={m.id}
+                className="w-7 h-7 rounded-full bg-accent flex items-center justify-center text-text-inverse text-[10px] font-semibold"
+                title={m.name}
+              >
+                {m.name.charAt(0).toUpperCase()}
+              </div>
+            ))}
 
-        {/* <div className="w-full h-full "> */}
-        {/* Messages Area */}
+          </div>
+        </div>
+        <div className="flex-1 min-w-0">
+          <h3 className="text-sm font-semibold text-text-primary truncate">
+            {getOtherPartyName(activeConversation)}
+          </h3>
+          <p className="text-xs text-text-muted truncate">
+            {isAdmin
+              ? activeConversation.project.name
+              : `${getOtherPartyName(activeConversation)} · Manager`}
+          </p>
+          <div className="mt-1 inline-flex items-center rounded-full border border-white/10 bg-slate-900/70 px-2 py-0.5 text-[10px] text-blue-200">
+            Project: {activeConversation.project.name}
+          </div>
+        </div>
+        <span className="flex items-center gap-1.5 h-fit text-[10px] text-green-600 dark:text-green-400 font-semibold bg-green-50 dark:bg-green-500/10 px-2 py-1 rounded-full">
+          <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
+          Online
+        </span>
+      </div>
+
+      {errorBanner && (
+        <div className="mx-4 mt-3 rounded-xl border border-red-500/25 bg-red-500/10 px-3 py-2 text-xs text-red-200 flex items-start justify-between gap-3">
+          <span className="leading-5">{errorBanner}</span>
+          <div className="flex items-center gap-2 shrink-0">
+            <button
+              type="button"
+              className="rounded-lg border border-white/10 bg-slate-950/40 px-2 py-1 text-[11px] text-text-primary hover:bg-white/5"
+              onClick={() => {
+                setErrorBanner(null);
+                fetchConversations();
+                fetchMessages(activeConversation.id);
+              }}
+            >
+              Retry
+            </button>
+            <button
+              type="button"
+              className="rounded-lg p-1 text-text-muted hover:text-text-primary hover:bg-white/5"
+              onClick={() => setErrorBanner(null)}
+              aria-label="Dismiss error"
+            >
+              <FiX className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* <div className="w-full h-full "> */}
+      {/* Messages Area */}
         {/* <div className="flex-1 overflow-scroll md:overflow-scroll overscroll-contain p-4 space-y-3 scroll-smooth  h-[100vh]  md:h-full" */}
-
+     
         <div
           ref={messagesContainerRef}
           onScroll={updateNearBottom}
-          className="chat-scroll flex-1 min-h-0 h-full overflow-y-auto overscroll-contain p-4 space-y-3 [scrollbar-gutter:stable] touch-pan-y"
-          role="log"
+            className="chat-scroll flex-1 min-h-0 h-80 overflow-y-auto overscroll-contain p-4 space-y-3 [scrollbar-gutter:stable] touch-pan-y"         
+            role="log"
           aria-live="polite"
           aria-relevant="additions text"
           aria-busy={isLoadingMessages}
@@ -799,280 +838,40 @@ export default function MessagesClient({
             </button>
           </div>
         )}
+      
 
-
-        {/* Message Input */}
-        <div className="shrink-0 border-t border-white/10 bg-slate-950/80 p-3">
-          <form onSubmit={sendMessage} className="flex items-end gap-2">
-            <textarea
-              ref={textareaRef}
-              value={newMessage}
-              onChange={handleTextareaChange}
-              onKeyDown={handleKeyDown}
-              placeholder="Type a message..."
-              rows={1}
-              aria-label="Message"
-              className=" flex-1 resize-none rounded-xl border border-border-default bg-bg-page px-4 py-2.5 text-sm text-text-primary placeholder-text-disabled focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all"
-              style={{ maxHeight: '120px' }}
-            />
-            <Button
-              type="submit"
-              size="sm"
-              disabled={!newMessage.trim() || isSending}
-              isLoading={isSending}
-              className="rounded-xl! min-h-[40px]! px-4!"
-              aria-label="Send message"
-            >
-              <FiSend className="w-4 h-4" />
-            </Button>
-          </form>
-          <p className="text-[10px] text-text-disabled mt-1.5 px-1">
-            Press Enter to send, Shift+Enter for new line
-          </p>
-        </div>
-
-        {/* </div> */}
+      {/* Message Input */}
+      <div className="shrink-0 border-t border-white/10 bg-slate-950/80 p-3">
+        <form onSubmit={sendMessage} className="flex items-end gap-2">
+          <textarea
+            ref={textareaRef}
+            value={newMessage}
+            onChange={handleTextareaChange}
+            onKeyDown={handleKeyDown}
+            placeholder="Type a message..."
+            rows={1}
+            aria-label="Message"
+            className=" flex-1 resize-none rounded-xl border border-border-default bg-bg-page px-4 py-2.5 text-sm text-text-primary placeholder-text-disabled focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all"
+            style={{ maxHeight: '120px' }}
+          />
+          <Button
+            type="submit"
+            size="sm"
+            disabled={!newMessage.trim() || isSending}
+            isLoading={isSending}
+            className="rounded-xl! min-h-[40px]! px-4!"
+            aria-label="Send message"
+          >
+            <FiSend className="w-4 h-4" />
+          </Button>
+        </form>
+        <p className="text-[10px] text-text-disabled mt-1.5 px-1">
+          Press Enter to send, Shift+Enter for new line
+        </p>
       </div>
-      {/* Mobile View */}
-      <div className="flex md:hidden relative flex-col h-full min-h-0">
 
-        {/* Thread Header */}
-        <div className="sticky top-0 z-10 flex gap-3 p-4 border-b border-white/10 bg-slate-950 shrink-0
-        ">
-          <span
-              className="bg-accent/30 hover:bg-accent/40 transition-all duration-200 rounded-full text-white  w-10 h-10 flex justify-center items-center"
-            onClick={handleBack}
-          ><ArrowLeft size={14} /></span>
-          {isAdmin && (
-            <button
-              onClick={() => setShowMobileThread(false)}
-              type="button"
-              className="lg:hidden p-1.5 text-text-muted hover:text-text-primary rounded-lg hover:bg-bg-subtle transition-colors"
-              aria-label="Back to conversations"
-            >
-              <FiChevronLeft className="w-5 h-5" />
-            </button>
-          )}
-          <div className="w-9 h-9 rounded-full bg-accent flex items-center justify-center text-text-inverse text-sm font-semibold shrink-0">
-            {/* {getOtherPartyName(activeConversation).charAt(0).toUpperCase()} */}
-            <div className="flex gap-1">
-                {activeConversation.project.manager?.name.charAt(0).toUpperCase()}
-{/*               
-              // .map((m) => (
-              //   <div
-              //     key={m.id}
-              //     className="w-7 h-7 rounded-full bg-accent flex items-center justify-center text-text-primary text-[10px] font-semibold"
-              //     title={m.name}
-              //   >
-              //     {m.name.charAt(0).toUpperCase()} A
-              //   </div>
-              // ))} */}
-
-            </div>
-          </div>
-          <div className="flex-1 min-w-0">
-            <h3 className="text-sm font-semibold text-text-primary truncate">
-              {getOtherPartyName(activeConversation)}
-            </h3>
-            <p className="text-xs text-text-muted truncate">
-              {isAdmin
-                ? activeConversation.project.name
-                : `${getOtherPartyName(activeConversation)} · Manager`}
-            </p>
-            <div className="mt-1 inline-flex items-center rounded-full border border-white/10 bg-slate-900/70 px-2 py-0.5 text-[10px] text-blue-200">
-              Project: {activeConversation.project.name}
-            </div>
-          </div>
-          <span className="flex items-center gap-1.5 h-fit text-[10px] text-green-600 dark:text-green-400 font-semibold bg-green-50 dark:bg-green-500/10 px-2 py-1 rounded-full">
-            <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
-            Online
-          </span>
-        </div>
-
-        {errorBanner && (
-          <div className="mx-4 mt-3 rounded-xl border border-red-500/25 bg-red-500/10 px-3 py-2 text-xs text-red-200 flex items-start justify-between gap-3">
-            <span className="leading-5">{errorBanner}</span>
-            <div className="flex items-center gap-2 shrink-0">
-              <button
-                type="button"
-                className="rounded-lg border border-white/10 bg-slate-950/40 px-2 py-1 text-[11px] text-text-primary hover:bg-white/5"
-                onClick={() => {
-                  setErrorBanner(null);
-                  fetchConversations();
-                  fetchMessages(activeConversation.id);
-                }}
-              >
-                Retry
-              </button>
-              <button
-                type="button"
-                className="rounded-lg p-1 text-text-muted hover:text-text-primary hover:bg-white/5"
-                onClick={() => setErrorBanner(null)}
-                aria-label="Dismiss error"
-              >
-                <FiX className="h-4 w-4" />
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* <div className="w-full h-full "> */}
-        {/* Messages Area */}
-        {/* <div className="flex-1 overflow-scroll md:overflow-scroll overscroll-contain p-4 space-y-3 scroll-smooth  h-[100vh]  md:h-full" */}
-
-        <div
-          ref={messagesContainerRef}
-          onScroll={updateNearBottom}
-          className="chat-scroll flex-1 min-h-0 overflow-y-auto  p-4 space-y-3 pb-32"
-          role="log"
-          aria-live="polite"
-          aria-relevant="additions text"
-          aria-busy={isLoadingMessages}
-        >
-          {isLoadingMessages ? (
-            <div className="space-y-3">
-              {Array.from({ length: 7 }).map((_, i) => (
-                <div
-                  key={i}
-                  className={`animate-pulse flex ${i % 2 === 0 ? 'justify-start' : 'justify-end'}`}
-                >
-                  <div className="w-[62%] max-w-[520px] rounded-2xl border border-white/10 bg-slate-950/25 px-4 py-3">
-                    <div className="h-3 w-40 rounded bg-white/10" />
-                    <div className="mt-2 h-2 w-56 rounded bg-white/10" />
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : messages.length === 0 ? (
-            <div className="text-center py-12">
-              <FiMessageSquare className="w-10 h-10 text-text-disabled mx-auto mb-2" />
-              <p className="text-sm text-text-muted">No messages yet</p>
-              <p className="text-xs text-text-disabled mt-1">
-                Send a message to start the conversation
-              </p>
-            </div>
-          ) : (
-            <>
-              {messages.map((msg, index) => {
-                const isOwn = msg.senderId === userId;
-                const previous = index > 0 ? messages[index - 1] : null;
-                const showDaySeparator =
-                  !previous ||
-                  !isSameDay(new Date(previous.createdAt), new Date(msg.createdAt));
-                return (
-                  <div key={msg.id}>
-                    {showDaySeparator && (
-                      <div className="my-4 flex items-center justify-center">
-                        <span className="rounded-full border text-text-primary border-white/10 bg-slate-950/75 px-3 py-1 text-[10px] font-medium ">
-                          {formatDaySeparator(msg.createdAt)}
-                        </span>
-                      </div>
-                    )}
-                    <div className={`flex ${isOwn ? 'justify-end' : 'justify-start'}`}>
-                      <div
-                        className={`max-w-[78%] rounded-2xl px-4 py-2.5 ${isOwn
-                          ? 'bg-blue-800 text-text-inverse rounded-br-md shadow-[0_10px_30px_rgba(59,130,246,0.12)]'
-                          : 'bg-slate-950/35 border border-white/10 text-text-primary rounded-bl-md'
-                          }`}
-                      >
-                        {!isOwn && (
-                          <p className="text-xs font-semibold mb-1 text-accent">
-                            {msg.sender.name}
-                          </p>
-                        )}
-                        <p className="text-sm whitespace-pre-wrap wrap-break-word">
-                          {msg.content}
-                        </p>
-                        <div
-                          className={`flex items-center gap-1 mt-1 ${isOwn ? 'justify-end' : 'justify-start'
-                            }`}
-                        >
-                          <span
-                            className={`text-[10px] ${isOwn
-                              ? 'text-text-inverse/60'
-                              : 'text-text-disabled'
-                              }`}
-                          >
-                            {formatMessageTime(msg.createdAt)}
-                          </span>
-                          {isOwn && (
-                            <span
-                              className={`${msg.isRead
-                                ? 'text-text-inverse/80'
-                                : 'text-text-inverse/40'
-                                }`}
-                              title={msg.isRead ? 'Read' : 'Sent'}
-                              aria-label={msg.isRead ? 'Read' : 'Sent'}
-                            >
-                              {msg.isRead ? (
-                                <FiCheckCircle className="w-3 h-3" />
-                              ) : (
-                                <FiCheck className="w-3 h-3" />
-                              )}
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-              <div ref={messagesEndRef} />
-            </>
-          )}
-        </div>
-
-        {showJumpToLatest && (
-          <div className="pointer-events-none absolute bottom-4 left-0 right-0 flex justify-center">
-            <button
-              type="button"
-              className="pointer-events-auto inline-flex items-center gap-2 rounded-full border border-white/15 bg-slate-950/80 px-3 py-2 text-xs font-semibold text-text-primary shadow-lg backdrop-blur hover:bg-slate-950/95 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/30"
-              onClick={() => {
-                scrollToBottom('smooth');
-                setShowJumpToLatest(false);
-                setIsNearBottom(true);
-              }}
-              aria-label="Jump to latest messages"
-            >
-              New messages
-              <span className="h-1.5 w-1.5 rounded-full bg-accent" />
-            </button>
-          </div>
-        )}
-
-
-        {/* Message Input */}
-        <div className="shrink-0 fixed bottom-0 w-full border-t border-white/10 bg-slate-950/80 p-3">
-          <form onSubmit={sendMessage} className="flex items-end gap-2">
-            <textarea
-              ref={textareaRef}
-              value={newMessage}
-              onChange={handleTextareaChange}
-              onKeyDown={handleKeyDown}
-              placeholder="Type a message..."
-              rows={1}
-              aria-label="Message"
-              className=" flex-1 resize-none rounded-xl border border-border-default bg-bg-page px-4 py-2.5 text-sm text-text-primary placeholder-text-disabled focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all"
-              style={{ maxHeight: '120px' }}
-            />
-            <Button
-              type="submit"
-              size="sm"
-              disabled={!newMessage.trim() || isSending}
-              isLoading={isSending}
-              className="rounded-xl! min-h-[40px]! px-4!"
-              aria-label="Send message"
-            >
-              <FiSend className="w-4 h-4" />
-            </Button>
-          </form>
-          <p className="text-[10px] text-text-disabled mt-1.5 px-1">
-            Press Enter to send, Shift+Enter for new line
-          </p>
-        </div>
-
-        {/* </div> */}
-      </div>
+      {/* </div> */}
+    </div>
 
     </>
   );
@@ -1085,7 +884,7 @@ export default function MessagesClient({
   // ── CLIENT: direct full-screen chat (no conversation list) ──────────
   if (!isAdmin) {
     return (
-      <div className="rounded-xl border border-white/15 bg-slate-900/60 shadow-[0_24px_60px_rgba(2,6,23,0.45)] overflow-hidden backdrop-blur-xl  min-h-[500px]">
+      <div className="rounded-xl border border-white/15 bg-slate-900/60 shadow-[0_24px_60px_rgba(2,6,23,0.45)] overflow-hidden backdrop-blur-xl h-[100dvh] min-h-[500px]">
         {isLoadingConvos ? (
           <div className="flex items-center justify-center h-full">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-accent" />
@@ -1101,20 +900,17 @@ export default function MessagesClient({
             </p>
           </div>
         ) : (
-          <div className="flex h-full w-full overflow-hidden">
+          <div className="flex flex-col md:flex-row h-full w-full ">
             {/* Project tabs — if multiple conversations */}
-
-            {/* Desktop */}
-            <div className="hidden md:flex w-full h-full">
-              {conversations.length > 1 && (
-                <div className=" w-full md:w-80 flex flex-col h-[100vh] border-r border-border-default bg-bg-subtle">
-                  {/* Header Section */}
-                  <div className="px-4 py-4">
-                    <h2 className="text-xs font-bold uppercase tracking-wider text-text-muted">
-                      Your Projects
-                    </h2>
-                  </div>
-                  {/* <div className="px-3 pb-3">
+            {conversations.length > 1 && (
+              <div className=" w-full md:w-80 flex flex-col h-fit md:h-full border-r border-border-default bg-bg-subtle">
+                {/* Header Section */}
+                <div className="px-4 py-4">
+                  <h2 className="text-xs font-bold uppercase tracking-wider text-text-muted">
+                    Your Projects
+                  </h2>
+                </div>
+                {/* <div className="px-3 pb-3">
                       <input
                         type="text"
                         placeholder="Search conversations..."
@@ -1123,156 +919,66 @@ export default function MessagesClient({
                         className="w-full px-3 py-2 text-sm rounded-lg border border-border-default bg-bg-card text-text-default placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-accent"
                       />
                     </div> */}
-                  {/* Scrollable List */}
-                  <div className="flex-1 overflow-y-auto px-2 space-y-1">
-                    <div className=" flex  items-center justify-center px-1 pb-3 mt-3 rounded-lg">
-                      <input
-                        type="text"
-                        placeholder="Search conversations..."
-                        value={search}
-                        onChange={(e) => setSearch(e.target.value)}
-                        className="w-full px-3 py-2 text-sm  bg-bg-card text-text-default placeholder:text-text-muted focus:outline-none focus:ring-[0.5px] focus:ring-accent  border border-border-default"
-                      />
-                      {/* <span className="w-10 h-10 flex justify-center items-center"><Search size={14} /></span>
+                {/* Scrollable List */}
+                <div className="flex-1 overflow-y-auto px-2 space-y-1">
+                  <div className=" flex  items-center justify-center px-1 pb-3 mt-3 rounded-lg">
+                    <input
+                      type="text"
+                      placeholder="Search conversations..."
+                      value={search}
+                      onChange={(e) => setSearch(e.target.value)}
+                      className="w-full px-3 py-2 text-sm  bg-bg-card text-text-default placeholder:text-text-muted focus:outline-none focus:ring-[0.5px] focus:ring-accent  border border-border-default"
+                    />
+                    {/* <span className="w-10 h-10 flex justify-center items-center"><Search size={14} /></span>
                          */}
-                    </div>
-                    <div className=''>
+                  </div>
+                  <div className=''>
 
-                      {filteredConversationsBySearch.map((conv) => {
-                        const isActive = activeConversation?.id === conv.id;
+                  {filteredConversationsBySearch.map((conv) => {
+                    const isActive = activeConversation?.id === conv.id;
 
-                        return (
-                          <button
-                            key={conv.id}
-                            onClick={() => openConversation(conv)}
-                            className={`
+                    return (
+                      <button
+                        key={conv.id}
+                        onClick={() => openConversation(conv)}
+                        className={`
             w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 group
             ${isActive
-                                ? 'bg-accent text-text-inverse shadow-sm'
-                                : 'text-text-muted hover:bg-bg-card hover:text-text-default border border-transparent hover:border-border-default'
-                              }`}
-                          >
-                            <div className="flex flex-col items-start gap-1 truncate">
-                              {/* Optional: Add a Folder or Hash icon here for better visuals */}
-                              <h1 className="truncate">{conv.project.name}</h1>
-                              {/* Admin / Manager names */}
-                              <p className="text-[11px] block text-text-muted truncate">
-                                {getOtherPartyName(conv)} · Manager
-                              </p>
-                              {conv.unreadCount > 0 && (
-                                <span className={`
+                            ? 'bg-accent text-text-inverse shadow-sm'
+                            : 'text-text-muted hover:bg-bg-card hover:text-text-default border border-transparent hover:border-border-default'
+                          }`}
+                      >
+                        <div className="flex flex-col items-start gap-1 truncate">
+                          {/* Optional: Add a Folder or Hash icon here for better visuals */}
+                          <h1 className="truncate">{conv.project.name}</h1>
+                          {/* Admin / Manager names */}
+                          <p className="text-[11px] block text-text-muted truncate">
+                            {getOtherPartyName(conv)} · Manager
+                          </p>
+                          {conv.unreadCount > 0 && (
+                            <span className={`
                 flex items-center justify-center min-w-[18px] h-[18px] px-1 text-[10px] font-bold rounded-full
                 ${isActive ? 'bg-white text-accent' : 'bg-red-500 text-white'}
               `}>
-                                  {conv.unreadCount}
-                                </span>
-                              )}
-                            </div>
+                              {conv.unreadCount}
+                            </span>
+                          )}
+                        </div>
 
-                            <ChevronRight
-                              size={14}
-                              className={`transition-transform duration-200 ${isActive ? 'translate-x-0' : 'opacity-0 group-hover:opacity-100 -translate-x-1 group-hover:translate-x-0'}`}
-                            />
-                          </button>
-                        );
-                      })}
-                    </div>
+                        <ChevronRight
+                          size={14}
+                          className={`transition-transform duration-200 ${isActive ? 'translate-x-0' : 'opacity-0 group-hover:opacity-100 -translate-x-1 group-hover:translate-x-0'}`}
+                        />
+                      </button>
+                    );
+                  })}
                   </div>
                 </div>
-              )}
-              <div className="flex-1">
-                {messageThreadJSX}
               </div>
+            )}
+            <div className=" flex w-full ">
+              {messageThreadJSX}
             </div>
-
-
-            {/* Mobile */}
-            <div className="block md:hidden w-full h-full bg-bg-page">
-              {!showMobileView && (
-                <div className="w-full h-full">
-                  {conversations.length > 1 && (
-                        <div className=" w-full md:w-80 flex flex-col h-[80vh] border-r border-border-default bg-bg-subtle">
-                      {/* Header Section */}
-                          <div className="px-5 py-6 flex flex-col gap-1">
-                            <div className="flex items-center gap-2 text-accent">
-                              <MessageSquareQuote size={14} strokeWidth={2.5} />
-                              <h2 className="text-[10px] font-bold uppercase tracking-[0.15em]">
-                                Project Workspace
-                              </h2>
-                            </div>
-                            <p className="text-base text-text-muted leading-relaxed">
-                              Sync with your <span className="text-text-default font-medium">Managers</span> on active tasks.
-                            </p>
-                          </div>
-
-                      {/* Scrollable List */}
-                      <div className="flex-1 overflow-y-auto px-2 space-y-1">
-                        <div className=" flex  items-center justify-center px-1 pb-3 mt-3 rounded-lg">
-                          <input
-                            type="text"
-                            placeholder="Search conversations..."
-                            value={search}
-                            onChange={(e) => setSearch(e.target.value)}
-                            className="w-full px-3 py-2 text-sm  bg-bg-card text-text-default placeholder:text-text-muted focus:outline-none focus:ring-[0.5px] focus:ring-accent  border border-border-default"
-                          />
-                          {/* <span className="w-10 h-10 flex justify-center items-center"><Search size={14} /></span>
-                         */}
-                        </div>
-                        <div className=''>
-
-                          {filteredConversationsBySearch.map((conv) => {
-                            const isActive = activeConversation?.id === conv.id;
-
-                            return (
-                              <button
-                                key={conv.id}
-                                onClick={() => openConversation(conv)}
-                                className={`
-            w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 group
-            ${isActive
-                                    ? 'bg-accent text-text-inverse shadow-sm'
-                                    : 'text-text-muted hover:bg-bg-card hover:text-text-default border border-transparent hover:border-border-default'
-                                  }`}
-                              >
-                                <div className="flex flex-col items-start gap-1 truncate">
-                                  {/* Optional: Add a Folder or Hash icon here for better visuals */}
-                                  <h1 className="truncate">{conv.project.name}</h1>
-                                  {/* Admin / Manager names */}
-                                  <p className="text-[11px] block text-text-muted truncate">
-                                    {getOtherPartyName(conv)} · Manager
-                                  </p>
-                                  {conv.unreadCount > 0 && (
-                                    <span className={`
-                flex items-center justify-center min-w-[18px] h-[18px] px-1 text-[10px] font-bold rounded-full
-                ${isActive ? 'bg-white text-accent' : 'bg-red-500 text-white'}
-              `}>
-                                      {conv.unreadCount}
-                                    </span>
-                                  )}
-                                </div>
-
-                                <ChevronRight
-                                  size={14}
-                                  className={`transition-transform duration-200 ${isActive ? 'translate-x-0' : 'opacity-0 group-hover:opacity-100 -translate-x-1 group-hover:translate-x-0'}`}
-                                />
-                              </button>
-                            );
-                          })}
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              )}
-              {showMobileView && (
-                <div className="w-full h-full">
-                  {messageThreadJSX}
-                </div>
-              )}
-
-            </div>
-
-
           </div>
         )}
       </div>
@@ -1281,7 +987,7 @@ export default function MessagesClient({
 
   // ── ADMIN: original side-by-side layout ──────────────────────────────
   return (
-    <div className="rounded-xl border border-white/15 bg-bg-page shadow-[0_24px_60px_rgba(2,6,23,0.45)] overflow-hidden backdrop-blur-xl md:h-[calc(100vh-200px)] min-h-[500px]">
+    <div className="rounded-xl border border-white/15 bg-slate-900/60 shadow-[0_24px_60px_rgba(2,6,23,0.45)] overflow-hidden backdrop-blur-xl md:h-[calc(100vh-200px)] min-h-[500px]">
       {/* Desktop: side-by-side */}
       <div className="w-full lg:grid lg:grid-cols-[340px_1fr] h-full">
         <div className="border-r border-border-default overflow-hidden">

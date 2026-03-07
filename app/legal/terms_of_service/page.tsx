@@ -92,7 +92,7 @@ export default function TermsPage() {
       <p>We reserve the right to modify these terms at any time. Changes will be posted on this page with an updated revision date.</p>
 
       <h4>Contact</h4>
-      <p>For questions about these terms, contact us at: <a href="mailto:meetechdevelopment@gmail.com">meetechdevelopment@gmail.com</a></p>
+      <p>For questions about these terms, contact us at: <a href="mailto:info@meetechdevelopment.com">info@meetechdevelopment.com</a></p>
     `};
 
      return (

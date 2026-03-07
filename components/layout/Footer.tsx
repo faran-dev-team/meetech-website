@@ -73,8 +73,8 @@ const contactInfo = [
   {
     icon: <Mail size={18} />,
     label: "Email",
-    value: "meetechdevelopment@gmail.com",
-    href: "mailto:meetechdevelopment@gmail.com",
+    value: "info@meetechdevelopment.com",
+    href: "mailto:info@meetechdevelopment.com",
   },
   {
     icon: <Phone size={18} />,
