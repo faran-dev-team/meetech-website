@@ -256,7 +256,7 @@ export default function AboutPage() {
         >
           {[
             "Founder-led teams",
-            "Global clients: UAE & USA",
+            "Global clients: USA",
             "Production-grade systems",
             "No hype, just execution",
           ].map((item, idx) => (

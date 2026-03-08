@@ -60,7 +60,7 @@ export function PageHero() {
                 <span className="relative inline-flex rounded-lg h-2.5 w-2.5 bg-accent"></span>
               </span>
               <p className="text-[11px] md:text-xs font-bold tracking-[0.25em] uppercase text-text-muted">
-                Scaling Innovation &middot; USA &middot; UAE &middot; Global
+                Scaling Innovation &middot; USA &middot; Global
               </p>
               <ChevronRight className="w-3.5 h-3.5 text-accent" />
             </motion.div>

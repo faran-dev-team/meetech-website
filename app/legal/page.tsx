@@ -283,7 +283,7 @@ export default function App() {
                   <CheckCircle2 size={20} />
                   <span className="text-[10px] font-black text-accent uppercase tracking-widest">Enterprise Ready</span>
                 </div>
-                <h4 className="font-bold text-sm mb-2 text-accent">GDPR & UAE Data Compliant</h4>
+                <h4 className="font-bold text-sm mb-2 text-accent">GDPR & USA Data Compliant</h4>
                 <p className="text-[11px] text-text-muted leading-relaxed mb-6">
                   Meetech Development strictly adheres to international data protection frameworks for our global client base.
                 </p>

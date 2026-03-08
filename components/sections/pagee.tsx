@@ -82,7 +82,7 @@ export default function App() {
               <span className="relative inline-flex h-2.5 w-2.5 rounded-lg bg-accent" />
             </span>
             <p className="text-[11px] md:text-xs font-bold tracking-[0.25em] uppercase text-text-muted">
-              Scaling Innovation · USA · UAE · Global
+              Scaling Innovation · USA · Global
             </p>
             <ChevronRight className="h-3.5 w-3.5 text-accent" />
           </div>

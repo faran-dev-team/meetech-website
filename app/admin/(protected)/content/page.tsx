@@ -56,7 +56,7 @@ export default async function AdminContentPage() {
               <div className="border border-gray-200 rounded-md p-4">
                 <h3 className="text-sm font-semibold text-[#1E293B] mb-2">Pages</h3>
                 <p className="text-xs text-gray-600 mb-3">
-                  Create and manage pages for UAE and USA regions
+                  Create and manage pages for USA regions
                 </p>
                 <ul className="text-xs text-gray-600 space-y-1">
                   <li>Home, Services, Solutions</li>
@@ -95,7 +95,7 @@ export default async function AdminContentPage() {
               <div className="border border-gray-200 rounded-md p-4">
                 <h3 className="text-sm font-semibold text-[#1E293B] mb-2">Multi-Region</h3>
                 <p className="text-xs text-gray-600 mb-3">
-                  Separate content for UAE and USA markets
+                  Separate content for USA markets
                 </p>
                 <ul className="text-xs text-gray-600 space-y-1">
                   <li>Region-specific text</li>
