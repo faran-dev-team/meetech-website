@@ -284,7 +284,7 @@
 //                         selected
 //                           ? 'bg-accent text-text-inverse shadow-md'
 //                           : todayMark
-//                             ? 'ring-2 ring-accent/40 font-bold'
+//                             ? 'ring-[0.5] ring-accent/40 font-bold'
 //                             : ''
 //                       }`}>
 //                         {day.getDate()}
@@ -370,7 +370,7 @@
 //                   onChange={(e) => setNotes(e.target.value)}
 //                   placeholder="Any specific points you want to cover..."
 //                   rows={3}
-//                   className="w-full rounded-xl border border-border-default bg-bg-surface pl-11 pr-4 py-3.5 text-sm text-text-primary placeholder:text-text-disabled focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 transition-colors disabled:opacity-50 resize-none"
+//                   className="w-full rounded-xl border border-border-default bg-bg-surface pl-11 pr-4 py-3.5 text-sm text-text-primary placeholder:text-text-disabled focus:border-accent focus:outline-none focus:ring-[0.5] focus:ring-accent/20 transition-colors disabled:opacity-50 resize-none"
 //                   disabled={isSubmitting}
 //                 />
 //               </div>
@@ -439,13 +439,23 @@
 //   );
 // }
 
+
 "use client";
 
-import * as Icons from "lucide-react";
-import { useState, useEffect, useMemo } from 'react';
-import { useToast } from '@/components/ui/Toast';
+import {
+  ChevronLeft,
+  ChevronRight,
+  AlertCircle,
+  CheckCircle,
+  FileText,
+  MessageSquare,
+  Calendar,
+  Clock,
+  Info,
+} from "lucide-react";
+import { useState, useEffect, useMemo } from "react";
+import { useToast } from "@/components/ui/Toast";
 import Link from "next/link";
-
 
 /* ----------------------------- CONSTANTS ----------------------------- */
 
@@ -503,11 +513,9 @@ export default function BookMeetingPage() {
 
   const [calendarMonth, setCalendarMonth] = useState(() => new Date());
   const [selectedDate, setSelectedDate] = useState("");
-  const [slotsAvailability, setSlotsAvailability] =
-    useState<Record<string, boolean> | null>(null);
+  const [slotsAvailability, setSlotsAvailability] = useState<Record<string, boolean> | null>(null);
   const [loadingSlots, setLoadingSlots] = useState(false);
-  const [preferredTimeSlot, setPreferredTimeSlot] =
-    useState<TimeSlot | "">("");
+  const [preferredTimeSlot, setPreferredTimeSlot] = useState<TimeSlot | "">("");
   const [topic, setTopic] = useState("");
   const [notes, setNotes] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -536,8 +544,7 @@ export default function BookMeetingPage() {
     const endPad = 6 - last.getDay();
     const days: (Date | null)[] = [];
     for (let i = 0; i < startPad; i++) days.push(null);
-    for (let d = 1; d <= last.getDate(); d++)
-      days.push(new Date(year, month, d));
+    for (let d = 1; d <= last.getDate(); d++) days.push(new Date(year, month, d));
     for (let i = 0; i < endPad; i++) days.push(null);
     return days;
   }, [calendarMonth]);
@@ -599,10 +606,8 @@ export default function BookMeetingPage() {
   /* ----------------------------- VALIDATIONS ----------------------------- */
 
   const isDateSelectable = (d: Date) => d >= tomorrow;
-  const isDateSelected = (d: Date) =>
-    selectedDate === toYYYYMMDD(d);
-  const isToday = (d: Date) =>
-    toYYYYMMDD(d) === toYYYYMMDD(today);
+  const isDateSelected = (d: Date) => selectedDate === toYYYYMMDD(d);
+  const isToday = (d: Date) => toYYYYMMDD(d) === toYYYYMMDD(today);
 
   /* ----------------------------- SUBMIT ----------------------------- */
 
@@ -610,12 +615,9 @@ export default function BookMeetingPage() {
     e.preventDefault();
     setFormError("");
 
-    if (!selectedDate)
-      return setFormError("Please select a date");
-    if (!preferredTimeSlot)
-      return setFormError("Please select a time slot");
-    if (!topic.trim())
-      return setFormError("Please enter a meeting topic");
+    if (!selectedDate) return setFormError("Please select a date");
+    if (!preferredTimeSlot) return setFormError("Please select a time slot");
+    if (!topic.trim()) return setFormError("Please enter a meeting topic");
 
     setIsSubmitting(true);
 
@@ -624,9 +626,7 @@ export default function BookMeetingPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          preferredDate: new Date(
-            selectedDate + "T12:00:00.000Z"
-          ).toISOString(),
+          preferredDate: new Date(selectedDate + "T12:00:00.000Z").toISOString(),
           preferredTimeSlot,
           topic: topic.trim(),
           notes: notes.trim() || undefined,
@@ -656,299 +656,315 @@ export default function BookMeetingPage() {
   /* ----------------------------- UI ----------------------------- */
 
   return (
-    <div className=" p-3 sm:p-4 md:p-6 font-sans">
-      <div className="w-full mx-auto space-y-8">
+    <div className="max-w-7xl mx-auto p-4 md:p-6 font-sans space-y-6">
+      {/* Breadcrumb – minimal */}
+      <nav className="flex text-sm text-text-muted mb-10" aria-label="Breadcrumb">
+        <ol className="inline-flex items-center space-x-2">
+          <li>
+            <Link href="/" className="hover:text-accent transition-colors">
+              Home
+            </Link>
+          </li>
+          <li>/</li>
+          <li>
+            <Link href="/client" className="hover:text-accent transition-colors">
+              Client
+            </Link>
+          </li>
+          <li>/</li>
+          <li className="text-text-primary font-medium">Book a meeting</li>
+        </ol>
+      </nav>
 
-        <header className="flex flex-col md:flex-row md:items-end justify-between gap-4">
-          <div>
-            <div className="flex items-center gap-2 text-accent mb-2">
-              <span className="p-1.5 bg-accent-muted rounded-lg flex items-center justify-center w-8 h-8">
-                <Icons.Calendar />
-              </span>
-              <span className="text-xs font-bold tracking-wider uppercase">Meetech Portal</span>
-            </div>
-            <h1 className="text-xl sm:text-4xl font-extrabold text-text-primary tracking-tight">
-              Book A Meeting
-            </h1>
-            <p className="text-xs sm:text-sm text-text-muted mt-1 max-w-md">
-              Schedule a session with your project manager to keep things moving.
-            </p>
-          </div>
-          <div className="hidden md:flex flex-col items-end text-right">
-            <span className="text-[10px] text-text-muted uppercase font-bold">Current timezone</span>
-            <span className="text-xs text-text-body font-medium">UTC+00:00 GMT</span>
-          </div>
-        </header>
+      {/* Header */}
+      <header className="flex my-6 flex-col md:flex-row md:items-end justify-between gap-2">
+        <div>
+          <h1 className="text-2xl md:text-5xl font-semibold text-text-primary tracking-tight capitalize">
+            Book a meeting
+          </h1>
+          <p className="text-text-muted text-sm mt-1">
+            Schedule a session with your project manager.
+          </p>
+        </div>
+        <div className="text-xs text-text-muted">
+          <span className="font-medium">Timezone:</span> UTC+00:00 (GMT)
+        </div>
+      </header>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <main className="md:col-span-2 space-y-6">
-            <div className="bg-bg-surface rounded-3xl shadow-sm border border-border-default  overflow-hidden">
-              <form onSubmit={handleSubmit}>
-                <div className="p-6 md:p-8 space-y-8">
-                  {formError && (
-                    <div className="flex items-center gap-3 p-4 bg-accent-muted border-border-default text-accent text-sm">
-                      <div className="w-5 h-5"><Icons.AlertCircle /></div>
-                      {formError}
-                    </div>
-                  )}
-
-                  {/* SELECT DATE */}
-                  <section>
-                    <div className="flex items-center justify-between mb-4">
-                      <label className="text-sm font-bold text-text-body flex items-center gap-2">
-                        <span className="w-6 h-6 rounded-full bg-accent-muted text-primary  flex items-center justify-center text-[10px]">1</span>
-                        SELECT DATE
-                      </label>
-                      <div className="flex items-center gap-2">
-                        <button
-                          type="button"
-                          onClick={() => setCalendarMonth(new Date(calendarMonth.getFullYear(), calendarMonth.getMonth() - 1))}
-                          className="p-2 hover:bg-bg-subtle rounded-xl transition-colors flex items-center justify-center w-8 h-8"
-                        >
-                          <Icons.ChevronLeft />
-                        </button>
-                        <span className="text-sm font-bold text-text-body w-32 text-center">
-                          {calendarMonth.toLocaleDateString(undefined, { month: 'long', year: 'numeric' })}
-                        </span>
-                        <button
-                          type="button"
-                          onClick={() => setCalendarMonth(new Date(calendarMonth.getFullYear(), calendarMonth.getMonth() + 1))}
-                          className="p-2 hover:bg-bg-subtle rounded-xl transition-colors flex items-center justify-center w-8 h-8"
-                        >
-                          <Icons.ChevronRight />
-                        </button>
-                      </div>
-                    </div>
-
-                    <div className="border border-border-default rounded-2xl overflow-hidden bg-bg-page">
-                      <div className="grid grid-cols-7 border-b border-border-default">
-                        {WEEKDAY_LABELS.map(label => (
-                          <div key={label} className="py-3 text-text-primary text-center text-[10px] font-bold bg-accent uppercase tracking-widest">
-                            {label}
-                          </div>
-                        ))}
-                      </div>
-                      <div className="grid grid-cols-7 gap-px bg-bg-subtle">
-                        {calendarDays.map((day, i) => {
-                          if (!day) return <div key={`empty-${i}`} className="bg-bg-surface h-12 md:h-14" />;
-                          const selectable = isDateSelectable(day);
-                          const selected = isDateSelected(day);
-                          const currentToday = isToday(day);
-
-                          return (
-                            <button
-                              key={toYYYYMMDD(day)}
-                              type="button"
-                              disabled={!selectable || isSubmitting}
-                              onClick={() => setSelectedDate(toYYYYMMDD(day))}
-                              className={`
-  relative h-12 md:h-14 flex flex-col items-center border-[0.4px] border-accent/20 justify-center transition-all bg-bg-surface
-  ${selectable ? 'hover:bg-accent-muted hover:text-inverse cursor-pointer' : 'cursor-not-allowed opacity-25'}
-  ${selected
-                                  ? 'z-10 bg-blue-600 text-text-primary ring-2 ring-accent ring-inset hover:bg-accent'
-                                  : 'text-text-body'}
-`}
-                            >
-                              <span className={`text-sm font-semibold ${selected ? 'text-text-inverse' : ''}`}>
-                                {day.getDate()}
-                              </span>
-                              {currentToday && !selected && (
-                                <div className="absolute bottom-1 w-1 h-1 rounded-full bg-accent" />
-                              )}
-                            </button>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  </section>
-
-                  {/* SELECT TIME WINDOW */}
-                  {selectedDate && (
-                    <section className="animate-in fade-in slide-in-from-top-4 duration-500">
-                      <label className="text-sm font-bold text-text-body flex items-center gap-2 mb-4">
-                        <span className="w-6 h-6 rounded-full bg-accent-muted text-primary flex items-center justify-center text-[10px]">2</span>
-                        SELECT TIME WINDOW
-                      </label>
-
-                      {loadingSlots ? (
-                        <div className="flex items-center gap-3 text-text-muted py-4 italic text-sm">
-                          <div className="w-4 h-4 border-2 border-border-strong border-t-accent rounded-full animate-spin" />
-                          Checking availability...
-                        </div>
-                      ) : (
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                          {TIME_SLOTS.filter((slot) => slotsAvailability?.[slot.value]).map((slot) => {
-                            const isSelected = preferredTimeSlot === slot.value;
-                            return (
-                              <button
-                                key={slot.value}
-                                type="button"
-                                disabled={isSubmitting}
-                                onClick={() => setPreferredTimeSlot(slot.value)}
-                                className={`
-                    relative flex flex-col p-4 rounded-2xl border-2 text-left transition-all
-                    ${isSelected ? 'border-accent bg-accent-muted ring-4 ring-accent-muted' : 'border-border-subtle hover:border-border-strong'}
-                  `}
-                              >
-                                <div className="flex justify-between items-start mb-2">
-                                  <span className="text-xl">{slot.icon}</span>
-                                  {isSelected && <div className="text-accent w-5 h-5"><Icons.CheckCircle /></div>}
-                                </div>
-                                <span className={`text-sm font-bold ${isSelected ? 'text-accent' : 'text-text-body'}`}>
-                                  {slot.label}
-                                </span>
-                                <span className="text-[11px] text-text-muted font-medium">
-                                  {slot.sublabel}
-                                </span>
-                              </button>
-                            );
-                          })}
-                          {TIME_SLOTS.every((slot) => !slotsAvailability?.[slot.value]) && slotsAvailability !== null && (
-                            <p className="col-span-3 text-sm text-text-muted py-2">No slots available for this date.</p>
-                          )}
-                        </div>
-                      )}
-                    </section>
-                  )}
-
-                  {/* MEETING DETAILS */}
-                  <section className="space-y-4">
-                    <label className="text-sm font-bold text-text-body flex items-center gap-2">
-                      <span className="w-6 h-6 rounded-full bg-accent-muted text-primary  flex items-center justify-center text-[10px]">3</span>
-                      MEETING DETAILS
-                    </label>
-                    <div className="space-y-4">
-                      <div className="relative group">
-                        <div className="absolute left-4 top-4 text-text-muted group-focus-within:text-accent transition-colors w-6 h-6"><Icons.FileText size={16} /></div>
-                        <input
-                          type="text"
-                          value={topic}
-                          onChange={e => setTopic(e.target.value)}
-                          placeholder="What would you like to discuss?"
-                          className="w-full bg-bg-page border border-border-default rounded-2xl pl-12 pr-4 py-3.5 text-sm outline-none focus:ring-2 focus:ring-focus-ring focus:border-accent transition-all placeholder:text-text-muted"
-                        />
-                      </div>
-                      <div className="relative group">
-                        <div className="absolute left-4 top-4 text-text-muted group-focus-within:text-accent transition-colors w-6 h-6"><Icons.MessageSquare size={16} /></div>
-                        <textarea
-                          rows={3}
-                          value={notes}
-                          onChange={e => setNotes(e.target.value)}
-                          placeholder="Additional context or specific questions (optional)..."
-                          className="w-full bg-bg-page border border-border-default rounded-2xl pl-12 pr-4 py-3.5 text-sm outline-none focus:ring-2 focus:ring-focus-ring focus:border-accent transition-all placeholder:text-text-muted resize-none"
-                        />
-                      </div>
-                    </div>
-                  </section>
-                </div>
-
-                {/* FORM FOOTER */}
-                <div className="p-6 md:px-8 border-t border-border-subtle bg-bg-subtle flex items-center justify-between gap-4">
-                  <p className=" w-full md:w-1/2 hidden md:flex items-center gap-2 text-xs text-text-muted font-medium">
-                    <span className="shrink-0 w-6 h-6"><Icons.Info size={16} /></span> Requests are usually confirmed within 24h.
-                  </p>
-                  <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="w-full md:w-1/2 px-6 py-3.5 bg-accent text-text-inverse rounded-2xl font-bold text-sm hover:bg-accent-hover active:scale-[0.98] transition-all shadow-xl shadow-accent-muted disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 hover:cursor-pointer"
-                  >
-                    {isSubmitting ? (
-                      <>
-                        <div className="w-4 h-4 border-2 border-text-inverse/30 border-t-text-inverse rounded-full animate-spin" />
-                        Sending...
-                      </>
-                    ) : (
-                      <>
-
-                        Confirm Request
-                      </>
-                    )}
-                  </button>
-                </div>
-              </form>
-            </div>
-          </main>
-
-          <aside className="md:col-span-1 space-y-6">
-            <div className="bg-bg-surface rounded-3xl p-6 lg:p-4 border border-border-default shadow-sm 2xl:sticky 2xl:top-8">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="font-bold text-text-primary flex items-center gap-2">
-                  Recent Requests
-                  <span className="bg-bg-subtle text-text-muted text-[10px] py-0.5 px-2 rounded-full font-bold">
-                    {requests.length}
-                  </span>
-                </h2>
+      {/* Main grid – split pane */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* LEFT COLUMN – Calendar & Time slots */}
+        <div className="space-y-6">
+          {/* Calendar card – glassmorphism */}
+          <div className="bg-accent/5 backdrop-blur-md ring-[0.5] ring-accent/10 rounded-2xl p-5 transition-all duration-300 hover:ring-accent/20 border-[1px] border-accent/20">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-sm font-medium text-text-primary/90">Select date</h2>
+              <div className="flex items-center gap-1">
+                <button
+                  type="button"
+                  onClick={() =>
+                    setCalendarMonth(
+                      new Date(calendarMonth.getFullYear(), calendarMonth.getMonth() - 1)
+                    )
+                  }
+                  className="p-1.5 hover:bg-accent/10 rounded-md transition-all"
+                >
+                  <ChevronLeft size={18} />
+                </button>
+                <span className="text-sm font-medium text-text-primary w-32 text-center">
+                  {calendarMonth.toLocaleDateString(undefined, {
+                    month: "long",
+                    year: "numeric",
+                  })}
+                </span>
+                <button
+                  type="button"
+                  onClick={() =>
+                    setCalendarMonth(
+                      new Date(calendarMonth.getFullYear(), calendarMonth.getMonth() + 1)
+                    )
+                  }
+                  className="p-1.5 hover:bg-accent/10 rounded-md transition-all"
+                >
+                  <ChevronRight size={18} />
+                </button>
               </div>
+            </div>
 
-              {loadingRequests ? (
-                <div className="space-y-4">
-                  {[1, 2].map(i => (
-                    <div key={i} className="h-20 bg-bg-subtle rounded-2xl animate-pulse" />
-                  ))}
-                </div>
-              ) : requests.length > 0 ? (
-                <div className="space-y-4 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
-                  {requests.map((req) => (
-                    <div
-                      key={req.id}
-                      className="group p-3 rounded-xl pb-2 hover:border-accent hover:bg-accent-muted transition-all"
+            <div className="ring-[0.5] ring-accent/10 rounded-xl overflow-hidden  bg-bg-page">
+              {/* Weekday headers */}
+              <div className="grid grid-cols-7 bg-accent text-text-primary border-b border-accent/10">
+                {WEEKDAY_LABELS.map((label) => (
+                  <div
+                    key={label}
+                    className="py-2  text-center text-xs font-medium"
+                  >
+                    {label}
+                  </div>
+                ))}
+              </div>
+              {/* Calendar days */}
+              <div className="grid grid-cols-7">
+                {calendarDays.map((day, i) => {
+                  if (!day)
+                    return <div key={`empty-${i}`} className="h-12 bg-transparent" />;
+                  const selectable = isDateSelectable(day);
+                  const selected = isDateSelected(day);
+                  const isCurrentToday = isToday(day);
+                  return (
+                    <button
+                      key={toYYYYMMDD(day)}
+                      type="button"
+                      disabled={!selectable || isSubmitting}
+                      onClick={() => setSelectedDate(toYYYYMMDD(day))}
+                      className={`
+                        relative h-12 flex items-center justify-center text-sm transition-all duration-150 border border-accent/20
+                        ${selectable ? "hover:bg-accent/10 cursor-pointer" : "opacity-30 cursor-not-allowed"}
+                        ${selected ? "bg-accent/80 text-text-inverse backdrop-blur-sm" : "text-text-primary/80"}
+                        ${isCurrentToday && !selected ? "ring-[0.5] ring-accent ring-inset" : ""}
+                      `}
                     >
-                      <div className="flex justify-between items-start mb-2">
-                        <span
-                          className={`
-                  text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider
-                  ${req.status === 'CONFIRMED' ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'}
-                `}
-                        >
-                          {req.status}
-                        </span>
-                        <span className="text-[10px] text-text-muted font-medium">#{req.id.slice(2, 6)}</span>
-                      </div>
-                      <h3 className="text-sm font-bold text-text-primary line-clamp-1 mb-1 group-hover:text-accent">
-                        {req.topic}
-                      </h3>
-                      <div className="flex flex-col gap-1 text-[11px] text-text-muted font-medium">
-                        <div className="flex items-center gap-1.5">
-                          <div className="shrink-0 w-3 h-3"><Icons.Calendar size={14} /></div>
-                          {formatDate(req.preferredDate)}
-                        </div>
-                        <div className="flex items-center gap-1.5">
-                          <div className="shrink-0 w-3 h-3"><Icons.Clock size={14} /></div>
-                          {formatSlot(req.preferredTimeSlot)}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
+                      {day.getDate()}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+
+          {/* Time slots – shown only when a date is selected */}
+          {selectedDate && (
+            <div className="bg-accent/5 backdrop-blur-md ring-[0.5] ring-accent/10 rounded-2xl p-5 transition-all duration-300 hover:ring-accent/20 border-[1px] border-accent/20">
+              <h2 className="text-sm font-medium text-text-primary/90 mb-4">Select time window</h2>
+
+              {loadingSlots ? (
+                <div className="flex items-center gap-2 text-text-muted text-sm py-2">
+                  <div className="w-4 h-4 border-2 border-accent/20 border-t-accent rounded-full animate-spin" />
+                  Checking availability...
                 </div>
               ) : (
-                <div className="text-center py-12">
-                  <div className="w-12 h-12 bg-bg-subtle rounded-full flex items-center justify-center mx-auto mb-4">
-                    <div className="text-text-disabled w-6 h-6"><Icons.Calendar /></div>
-                  </div>
-                  <p className="text-sm text-text-muted">No recent requests found.</p>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                  {TIME_SLOTS.filter((slot) => slotsAvailability?.[slot.value]).map((slot) => {
+                    const isSelected = preferredTimeSlot === slot.value;
+                    return (
+                      <button
+                        key={slot.value}
+                        type="button"
+                        disabled={isSubmitting}
+                        onClick={() => setPreferredTimeSlot(slot.value)}
+                        className={`
+                          flex flex-col items-start p-3 rounded-xl ring-[0.5] transition-all duration-200  border-[1px] border-accent/20
+                          
+                          ${isSelected
+                            ? "ring-1 ring-accent bg-accent/60 text-text-primary"
+                          : "ring-accent/10 hover:ring-accent/20 bg-bg-page"
+                          }
+                        `}
+                      >
+                        <span className="text-lg mb-1">{slot.icon}</span>
+                        <span
+                          className={`text-xs font-medium "
+                            }`}
+                        >
+                          {slot.label}
+                        </span>
+                        <span className="text-[10px] text-text-muted">{slot.sublabel}</span>
+                      </button>
+                    );
+                  })}
+                  {TIME_SLOTS.every((slot) => !slotsAvailability?.[slot.value]) &&
+                    slotsAvailability !== null && (
+                      <p className="col-span-3 text-sm text-text-muted/70 py-2">
+                        No slots available for this date.
+                      </p>
+                    )}
                 </div>
               )}
             </div>
-
-            <div className="bg-accent rounded-3xl p-6 lg:p-4 text-text-inverse shadow-xl shadow-accent-muted overflow-hidden relative">
-              <div className="">
-                <h3 className="font-bold mb-2">Need a rush meeting?</h3>
-                <p className="text-xs text-text-inverse/80 mb-4 leading-relaxed">
-                  If you have an urgent issue that needs immediate attention, contact support directly.
-                </p>
-                <Link
-                  href="/client/messages"
-                  className="text-xs font-bold bg-bg-surface text-accent px-4 py-2 rounded-xl hover:bg-text-primary hover:cursor-pointer transition-colors">
-                  Contact Support
-                </Link>
-              </div>
-              <div className="absolute -right-4 -bottom-4 w-24 h-24 bg-accent-hover rounded-full blur-2xl opacity-50" />
+          )}
         </div>
-      </aside>
+
+        {/* RIGHT COLUMN – Meeting details & recent requests */}
+        <div className="space-y-6">
+          {/* Form card – glassmorphism */}
+          <div className="bg-accent/5 backdrop-blur-md ring-[0.5] ring-accent/10 rounded-2xl p-5 transition-all duration-300 hover:ring-accent/20 border-[1px] border-accent/20">
+            <form onSubmit={handleSubmit} className="space-y-5">
+              {formError && (
+                <div className="flex items-center gap-2 p-3 bg-red-500/10 text-red-400 text-sm ring-[0.5] ring-red-500/20 rounded-lg">
+                  <AlertCircle size={18} />
+                  {formError}
+                </div>
+              )}
+
+              <div className="space-y-4">
+                <div className="relative">
+                  <FileText
+                    size={18}
+                    className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted/60"
+                  />
+                  <input
+                    type="text"
+                    value={topic}
+                    onChange={(e) => setTopic(e.target.value)}
+                    placeholder="Meeting topic"
+                    className="w-full pl-10 pr-4 py-2.5 bg-bg-page ring-[0.5] ring-accent/10 rounded-lg text-sm focus:ring-[0.5] focus:ring-accent outline-none transition placeholder:text-text-muted/50"
+                  />
+                </div>
+                <div className="relative">
+                  <MessageSquare
+                    size={18}
+                    className="absolute left-3 top-3 text-text-muted/60"
+                  />
+                  <textarea
+                    rows={3}
+                    value={notes}
+                    onChange={(e) => setNotes(e.target.value)}
+                    placeholder="Additional notes (optional)"
+                    className="w-full pl-10 pr-4 py-2.5 bg-bg-page ring-[0.5] ring-accent/10 rounded-lg text-sm focus:ring-[0.5] focus:ring-accent outline-none transition resize-none placeholder:text-text-muted/50"
+                  />
+                </div>
+              </div>
+
+              <div className="pt-3 flex items-center justify-between gap-4">
+                <div className="hidden md:flex items-center gap-1.5 text-xs text-text-muted/70">
+                  <Info size={14} />
+                  <span>Usually confirmed within 24h</span>
+                </div>
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="px-6 py-2.5 bg-accent text-text-inverse rounded-lg text-sm font-medium hover:bg-accent-hover active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                >
+                  {isSubmitting ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-text-inverse/30 border-t-text-inverse rounded-full animate-spin" />
+                      Sending...
+                    </>
+                  ) : (
+                    "Confirm request"
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+
+          {/* Recent requests card – glassmorphism */}
+          <div className="bg-accent/5 backdrop-blur-md ring-[0.5] ring-accent/10 rounded-2xl p-5 transition-all duration-300 hover:ring-accent/20 border-[1px] border-accent/20">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-sm font-medium text-text-primary/90">Recent requests</h2>
+              <span className="text-xs bg-accent/10 text-text-muted px-2 py-0.5 rounded-full">
+                {requests.length}
+              </span>
+            </div>
+
+            {loadingRequests ? (
+              <div className="space-y-3">
+                {[1, 2].map((i) => (
+                  <div key={i} className="h-16 bg-accent/5 rounded-lg animate-pulse" />
+                ))}
+              </div>
+            ) : requests.length > 0 ? (
+              <div className="space-y-3 max-h-[300px] overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-accent/20">
+                {requests.map((req) => (
+                  <div
+                    key={req.id}
+                    className="p-3 bg-bg-page ring-[0.5] ring-accent/10 rounded-lg hover:ring-accent/30 transition-all duration-200 hover:scale-[1.01]"
+                  >
+                    <div className="flex items-start justify-between mb-1">
+                      <span
+                        className={`text-[10px] font-medium px-1.5 py-0.5 rounded-full ${req.status === "CONFIRMED"
+                            ? "bg-green-500/20 text-green-400"
+                            : "bg-orange-500/20 text-orange-400"
+                          }`}
+                      >
+                        {req.status}
+                      </span>
+                      <span className="text-[9px] text-text-muted/50">#{req.id.slice(0, 4)}</span>
+                    </div>
+                    <h3 className="text-sm font-medium text-text-primary/90 truncate mb-1">
+                      {req.topic}
+                    </h3>
+                    <div className="flex items-center gap-3 text-[10px] text-text-muted/70">
+                      <span className="flex items-center gap-1">
+                        <Calendar size={12} />
+                        {formatDate(req.preferredDate)}
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <Clock size={12} />
+                        {formatSlot(req.preferredTimeSlot)}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              /* Beautiful empty state */
+              <div className="text-center py-12">
+                <div className="relative mx-auto h-24 w-24 mb-4">
+                  <div className="absolute inset-0 rounded-full bg-accent/5 animate-pulse" />
+                  <Calendar className="relative h-12 w-12 text-text-muted/30 mx-auto mt-6" />
+                </div>
+                <p className="text-sm text-text-muted/60 font-light">No meetings scheduled</p>
+                <p className="text-xs text-text-muted/40 mt-1">Your requests will appear here</p>
+              </div>
+            )}
+          </div>
+
+          {/* Support card – glassmorphism */}
+          <div className="bg-accent/10 backdrop-blur-md ring-[0.5] ring-accent/20 rounded-2xl p-5 transition-all duration-300 hover:ring-accent/30 border-[1px] border-accent/20">
+            <h3 className="text-sm font-medium text-text-primary/90 mb-1">Need a rush meeting?</h3>
+            <p className="text-xs text-text-muted/70 mb-3">
+              Contact support directly for urgent matters.
+            </p>
+            <Link
+              href="/client/messages"
+              className="inline-flex items-center px-3 py-1.5 bg-accent text-text-inverse text-xs rounded-lg hover:bg-accent-hover transition-colors"
+            >
+              Contact support
+            </Link>
+          </div>
+        </div>
+      </div>
     </div>
-      </div >
-    </div >
   );
 }
-
-

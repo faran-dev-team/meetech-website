@@ -97,7 +97,7 @@ function SplashScreen({ onDone }: { onDone: () => void }) {
       </div>
 
       {/* Logo */}
-      <div
+      {/* <div
         style={{
           transform: phase === 'enter' ? 'scale(0.6) translateY(20px)' : 'scale(1) translateY(0)',
           opacity: phase === 'enter' ? 0 : 1,
@@ -105,7 +105,7 @@ function SplashScreen({ onDone }: { onDone: () => void }) {
         }}
         className="mb-8 relative"
       >
-        {/* Glow behind logo */}
+        {/* Glow behind logo 
         <div
           className="absolute inset-0 rounded-full blur-3xl"
           style={{
@@ -121,8 +121,10 @@ function SplashScreen({ onDone }: { onDone: () => void }) {
           className="relative z-10 h-24 w-auto"
           priority
         />
+      </div> */}
+      <div className="mb-8">
+        <Image src="/icon.png" alt="Meetech" width={120} height={32} className="h-8 w-auto" />
       </div>
-
       {/* Text block */}
       <div
         style={{
@@ -193,8 +195,8 @@ const GlobalNavItem = ({ icon: Icon, active, label, onClick }: GlobalNavItemProp
     <button onClick={onClick} type="button" className="w-full">
       <div
         className={`flex items-center gap-3 w-full px-4 py-3 rounded-2xl transition-all duration-300 ${active
-            ? "text-blue-300 border border-blue-400/20 bg-transparent"
-            : "text-text-disabled hover:text-text-primary hover:bg-white/10 border border-transparent hover:border-white/10"
+          ? "text-text-primary border border-accent/90 bg-accent/90"
+          : "text-text-disabled hover:text-text-primary hover:bg-accent/10 border border-transparent hover:border-accent/10"
           }`}
       >
         <Icon size={20} />
@@ -288,7 +290,7 @@ export default function App({ children }: { children: React.ReactNode; user?: { 
         </header>
 
         {/* 1. GLOBAL NAVIGATION (DARK SIDEBAR) */}
-        <aside className="hidden lg:flex w-64 bg-slate-950/65 backdrop-blur-2xl flex-col py-6 px-4 border-r border-white/10 shrink-0 z-20 shadow-[16px_0_40px_rgba(2,6,23,0.45)]">
+        {/* <aside className="hidden lg:flex w-64 bg-slate-950/65 backdrop-blur-2xl flex-col py-6 px-4 border-r border-white/10 shrink-0 z-20 shadow-[16px_0_40px_rgba(2,6,23,0.45)]">
           <div className="relative mb-8">
             <Image
               src="/icon.png"
@@ -352,45 +354,134 @@ export default function App({ children }: { children: React.ReactNode; user?: { 
             >
               <div className="h-[22px] w-[22px] rounded-full bg-blue-400/80 shadow-[0_0_20px_rgba(59,130,246,0.7)]" />
             </button> */}
+        {/* 1. GLOBAL NAVIGATION – Enhanced minimalist sidebar */}
+        <aside className="hidden lg:flex w-64 flex-col bg-bg-surface border-r border-border-default shrink-0 z-20">
+          {/* Logo – cleaner placement */}
+          <div className="px-4 pt-8 pb-6">
+            <Image
+              src="/icon.png"
+              alt="Meetech"
+              width={140}
+              height={40}
+              className="h-8 w-auto"
+              priority
+            />
+          </div>
+
+          {/* Navigation */}
+          <nav className="flex-1 px-3 space-y-1">
+            <GlobalNavItem
+              icon={LayoutDashboard}
+              label="Dashboard"
+              active={isActive('/client/dashboard')}
+              onClick={() => router.push('/client/dashboard')}
+            />
+            <GlobalNavItem
+              icon={CalendarPlus}
+              label="Book Your Meeting"
+              active={isActive('/client/booking')}
+              onClick={() => router.push('/client/book-meeting')}
+            />
+            <GlobalNavItem
+              icon={MessageSquare}
+              label="Messages"
+              active={isActive('/client/messages')}
+              onClick={() => router.push('/client/messages')}
+            />
+            <GlobalNavItem
+              icon={FolderKanban}
+              label="My Projects"
+              active={isActive('/client/projects')}
+              onClick={() => router.push('/client/projects')}
+            />
+            <GlobalNavItem
+              icon={CreditCard}
+              label="Payments"
+              active={isActive('/client/payments')}
+              onClick={() => router.push('/client/payments')}
+            />
+            <GlobalNavItem
+              icon={UserCircle}
+              label="My Profile"
+              active={isActive('/client/profile')}
+              onClick={() => router.push('/client/profile')}
+            />
+          </nav>
+
+          {/* Footer – logout + profile */}
+          <div className="px-3 pb-6 mt-auto space-y-3">
             <button
               onClick={handleSignOut}
               disabled={isSigningOut}
-              title="Sign Out"
-              className="p-3 flex  rounded-xl text-text-disabled hover:text-red-400 hover:bg-red-500/10 transition-all disabled:opacity-50"
+              className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-text-muted hover:text-red-400 hover:bg-red-500/10 transition-all disabled:opacity-50 text-sm font-medium"
             >
-              <LogOut size={22} /> <span className=' text-sm ml-3'>Log Out </span>
+              <LogOut size={18} />
+              <span>Log out</span>
             </button>
-            <button
-              type="button"
-              onClick={() => router.push('/client/profile')}
-              className="flex items-center  border-t-[0.5px] border-t-accent  gap-3 group p-3 transition-colors hover:bg-white/5 w-full text-left"
-              title="My Profile"
-            >
-              {/* Avatar Circle */}
-              <div className="relative shrink-0 w-10 h-10 rounded-full overflow-hidden bg-accent text-text-inverse flex items-center justify-center text-sm font-bold shadow-sm ring-1 ring-white/10">
-                {session?.user.name
-                  ?.split(" ")
-                  .filter(Boolean)
-                  .map((n, i, arr) => (i === 0 || i === arr.length - 1 ? n[0] : ""))
-                  .join("")
-                  .toUpperCase() || "U"}
-              </div>
 
-              {/* User Info - Hidden on collapsed sidebar, visible on desktop */}
-              <div className="flex flex-col overflow-hidden">
-                <span className="text-sm font-semibold text-text-inverse truncate group-hover:text-accent transition-colors">
-                  {session?.user.name || "User Name"}
+            <button
+              onClick={() => router.push('/client/profile')}
+              className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl bg-accent/5 hover:bg-accent/10 transition-colors border border-accent/10"
+            >
+              {/* Avatar with fallback */}
+              <div className="w-8 h-8 rounded-full bg-accent flex items-center justify-center text-xs font-bold text-text-inverse shrink-0">
+                {session?.user.name
+                  ?.split(' ')
+                  .filter(Boolean)
+                  .map((n) => n[0])
+                  .join('')
+                  .toUpperCase()
+                  .slice(0, 2) || 'U'}
+              </div>
+              <div className="flex flex-col items-start overflow-hidden text-left">
+                <span className="text-sm font-semibold text-text-primary truncate w-full">
+                  {session?.user.name || 'User Name'}
                 </span>
-                <span className="text-xs text-text-inverse/50 truncate">
-                  {session?.user.email || "user@email.com"}
+                <span className="text-xs text-text-muted truncate w-full">
+                  {session?.user.email || 'user@email.com'}
                 </span>
               </div>
             </button>
           </div>
         </aside>
+        {/* <div className="px-3 pb-6 mt-auto space-y-3">
+          <button
+            onClick={handleSignOut}
+            disabled={isSigningOut}
+            className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-text-muted hover:text-red-400 hover:bg-red-500/10 transition-all disabled:opacity-50 text-sm font-medium"
+          >
+            <LogOut size={18} />
+            <span>Log out</span>
+          </button>
 
-        {/* 2. CONTEXTUAL SIDEBAR (VISIBLE ONLY ON DASHBOARD) */}
-        {/* <aside
+          <button
+            onClick={() => router.push('/client/profile')}
+            className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl bg-accent/5 hover:bg-accent/10 transition-colors border border-accent/10"
+          >
+            {/* Avatar with fallback
+            <div className="w-8 h-8 rounded-full bg-accent flex items-center justify-center text-xs font-bold text-text-inverse shrink-0">
+              {session?.user.name
+                ?.split(' ')
+                .filter(Boolean)
+                .map((n) => n[0])
+                .join('')
+                .toUpperCase()
+                .slice(0, 2) || 'U'}
+            </div>
+            <div className="flex flex-col items-start overflow-hidden text-left">
+              <span className="text-sm font-semibold text-text-primary truncate w-full">
+                {session?.user.name || 'User Name'}
+              </span>
+              <span className="text-xs text-text-muted truncate w-full">
+                {session?.user.email || 'user@email.com'}
+              </span>
+            </div>
+          </button>
+        </div> */}
+      
+
+      {/* 2. CONTEXTUAL SIDEBAR (VISIBLE ONLY ON DASHBOARD) */}
+      {/* <aside
           className={`w-80 bg-slate-950/45 backdrop-blur-xl border-r border-white/10 overflow-y-auto hidden xl:block transition-all duration-300 ${
             pathname !== "/client/dashboard" ? "opacity-50 pointer-events-none grayscale" : ""
           }`}
@@ -465,15 +556,15 @@ export default function App({ children }: { children: React.ReactNode; user?: { 
           </div>
         </aside> */}
 
-        {/* 3. MAIN WORKSPACE */}
-        <main className="flex-1 flex flex-col overflow-hidden relative pt-14 lg:pt-0 z-10">
-          {/* Content */}
-          <div className="flex-1 p-2 md:p-6 md:pb-40 lg:p-8 pb-24 lg:pb-8 overflow-y-auto mb-14 md:mb-0">
-            {children}
-          </div>
+      {/* 3. MAIN WORKSPACE */}
+      <main className="flex-1 flex flex-col overflow-hidden relative pt-14 lg:pt-0 z-10">
+        {/* Content */}
+        <div className="flex-1 p-2 md:p-6 md:pb-40 lg:p-8 pb-24 lg:pb-8 overflow-y-auto mb-14 md:mb-0">
+          {children}
+        </div>
 
-          {/* FLOATING ACTION MENU */}
-          <div className="absolute bottom-24 right-4 sm:right-6 lg:bottom-10 lg:right-10 flex flex-col items-end gap-4 z-50">
+        {/* FLOATING ACTION MENU */}
+        {/* <div className="absolute bottom-24 right-4 sm:right-6 lg:bottom-10 lg:right-10 flex flex-col items-end gap-4 z-50">
             {isActionMenuOpen && (
               <>
                 <div
@@ -510,12 +601,12 @@ export default function App({ children }: { children: React.ReactNode; user?: { 
             >
               <Plus size={24} style={{ transform: isActionMenuOpen ? "rotate(45deg)" : "rotate(0deg)", transition: 'transform 0.3s' }} />
             </button>
-          </div>
-        </main>
-      </div>
+          </div> */}
+      </main>
+    </div >
 
-      {/* Mobile bottom navigation */}
-      <nav className="lg:hidden fixed bottom-0 inset-x-0 z-40 h-16 bg-slate-950/80 backdrop-blur-2xl border-t border-white/10 grid grid-cols-6 px-1 shadow-[0_-10px_30px_rgba(2,6,23,0.65)]">
+      {/* Mobile bottom navigation */ }
+      < nav className = "lg:hidden fixed bottom-0 inset-x-0 z-40 h-16 bg-slate-950/80 backdrop-blur-2xl border-t border-white/10 grid grid-cols-6 px-1 shadow-[0_-10px_30px_rgba(2,6,23,0.65)]" >
         <button
           type="button"
           onClick={() => router.push('/client/dashboard')}
@@ -567,59 +658,8 @@ export default function App({ children }: { children: React.ReactNode; user?: { 
           <UserCircle size={18} />
           Profile
         </button>
-      </nav>
+      </nav >
 
-      {/* Dashboard Popups */}
-      {/* <main className="flex-1 overflow-y-auto p-8">
-        {children}
-      </main> */}
-      {/* {isDashboard && modal && (
-        <div className="fixed inset-0 z-[140]">
-          <div
-            className="absolute inset-0 bg-black/70 backdrop-blur-md"
-            onClick={closeDashboardModal}
-          />
-          <div className="relative z-10 flex h-full w-full items-center justify-center p-2 sm:p-5">
-            <div className={`w-full rounded-2xl border border-white/15 bg-slate-950/95 shadow-[0_30px_90px_rgba(0,0,0,0.6)] overflow-hidden backdrop-blur-xl ${
-              modal === 'messages'
-                ? 'h-[96vh] sm:h-[94vh] max-w-[1200px]'
-                : 'h-[94vh] sm:h-[90vh] max-w-[960px]'
-            }`}>
-            <div className="sticky top-0 z-20 flex items-center justify-between px-5 py-3 border-b border-white/10 bg-slate-900/85 backdrop-blur-xl">
-              <h2 className="text-sm sm:text-base font-semibold text-text-primary">
-                {modal === 'booking' && 'Book Your Meeting'}
-                {modal === 'messages' && 'Messages'}
-                {modal === 'profile' && 'My Profile'}
-              </h2>
-              <button
-                onClick={closeDashboardModal}
-                className="p-2 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-subtle transition-colors"
-                aria-label="Close modal"
-              >
-                <X size={18} />
-              </button>
-            </div>
-            <div className={`h-[calc(100%-56px)] overflow-y-auto ${modal === 'messages' ? 'p-0' : 'p-3 sm:p-6'}`}>
-              {modal === 'booking' && (
-                <div className="mx-auto w-full max-w-4xl">
-                  <BookMeetingPage />
-                </div>
-              )}
-              {modal === 'messages' && session?.user?.id && session?.user?.role && (
-                <div className="h-full">
-                  <MessagesClient userId={session.user.id} userRole={session.user.role} />
-                </div>
-              )}
-              {modal === 'profile' && (
-                <div className="mx-auto w-full max-w-5xl">
-                  <ClientProfilePage />
-                </div>
-              )}
-            </div>
-            </div>
-          </div>
-        </div>
-      )} */}
     </>
   );
 }

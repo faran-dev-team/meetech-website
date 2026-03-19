@@ -130,20 +130,40 @@ export default function PaymentsClient() {
   }
 
   return (
-    <div className="space-y-8 p-4">
-      {/* Hero Banner */}
-      <div className="relative overflow-hidden rounded-3xl border border-white/15 bg-gradient-to-br from-slate-900/95 via-blue-950/70 to-indigo-950/70 p-7 sm:p-10 shadow-[0_30px_80px_rgba(30,64,175,0.45)]">
-        <div className="absolute inset-0 opacity-[0.07]" style={{ backgroundImage: 'radial-gradient(circle at 20% 50%, white 1px, transparent 1px), radial-gradient(circle at 80% 20%, white 1px, transparent 1px)', backgroundSize: '60px 60px, 40px 40px' }} />
+    <div className="space-y-8 p-4 lg:p-10">
+      <div className="flex flex-col space-y-4 md:flex-row md:items-center md:justify-between mb-4">
 
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-8">
+        <nav className="flex text-text-muted p-2 rounded-lg border border-accent/15 bg-accent/10" aria-label="Breadcrumb">
+          <ol className="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
+            <li className="inline-flex items-center">
+              <a href="/" className="inline-flex items-center text-sm font-medium text-body hover:text-fg-brand">
+                <svg className="w-4 h-4 me-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m4 12 8-8 8 8M6 10.5V19a1 1 0 0 0 1 1h3v-3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3h3a1 1 0 0 0 1-1v-8.5" /></svg>
+                Home
+              </a>
+            </li>
+            <li>
+              <div className="flex items-center space-x-1.5">
+                <svg className="w-3.5 h-3.5 rtl:rotate-180 text-body" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m9 5 7 7-7 7" /></svg>
+                <a href="#" className="inline-flex items-center text-sm font-medium text-body hover:text-fg-brand">Client</a>
+              </div>
+            </li>
+            <li aria-current="page">
+              <div className="flex items-center space-x-1.5">
+                <svg className="w-3.5 h-3.5 rtl:rotate-180 text-body" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m9 5 7 7-7 7" /></svg>
+                <span className="inline-flex items-center text-sm font-medium text-body-subtle"> Payment Center</span>
+              </div>
+            </li>
+          </ol>
+        </nav>
+
+      </div>
+      {/* Hero Banner */}
+      <div className="relative overflow-hidden">
+
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-8 mt-10">
           <div className="flex-1">
-            <div className="flex items-center gap-2 mb-3">
-              <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              <p className="text-text-inverse/70 text-sm font-medium uppercase tracking-wider">
-                Payment Center
-              </p>
-            </div>
-            <h1 className="text-3xl sm:text-4xl font-bold text-text-inverse tracking-tight">
+
+            <h1 className="text-3xl md:text-5xl font-bold text-text-inverse tracking-tight">
               Payments
             </h1>
             <p className="text-text-inverse/80 mt-3 text-sm sm:text-base max-w-md leading-relaxed">
@@ -151,28 +171,7 @@ export default function PaymentsClient() {
             </p>
           </div>
 
-          <div className="grid grid-cols-2 gap-4 w-full md:w-auto">
-            <StatCard
-              label="Total Budget"
-              value={`$${totalAmount.toLocaleString()}`}
-              icon={<FiDollarSign className="w-4 h-4 text-blue-400" />}
-            />
-            <StatCard
-              label="Paid"
-              value={`$${paidAmount.toLocaleString()}`}
-              icon={<FiCheckCircle className="w-4 h-4 text-green-400" />}
-            />
-            <StatCard
-              label="Pending"
-              value={`$${pendingAmount.toLocaleString()}`}
-              icon={<FiClock className="w-4 h-4 text-yellow-400" />}
-            />
-            <StatCard
-              label="Overdue"
-              value={String(overdueCount)}
-              icon={<FiAlertTriangle className="w-4 h-4 text-red-400" />}
-            />
-          </div>
+
         </div>
       </div>
 
@@ -201,17 +200,38 @@ export default function PaymentsClient() {
         </div>
       )}
 
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 w-full md:w-auto">
+        <StatCard
+          label="Total Budget"
+          value={`$${totalAmount.toLocaleString()}`}
+          icon={<FiDollarSign className="w-4 h-4 text-blue-400" />}
+        />
+        <StatCard
+          label="Paid"
+          value={`$${paidAmount.toLocaleString()}`}
+          icon={<FiCheckCircle className="w-4 h-4 text-green-400" />}
+        />
+        <StatCard
+          label="Pending"
+          value={`$${pendingAmount.toLocaleString()}`}
+          icon={<FiClock className="w-4 h-4 text-yellow-400" />}
+        />
+        <StatCard
+          label="Overdue"
+          value={String(overdueCount)}
+          icon={<FiAlertTriangle className="w-4 h-4 text-red-400" />}
+        />
+      </div>
       {/* Filter Tabs */}
       <div className="flex gap-2 flex-wrap">
         {(['ALL', 'PENDING', 'PAID', 'OVERDUE'] as const).map((f) => (
           <button
             key={f}
             onClick={() => setFilter(f)}
-            className={`px-4 py-2 text-xs font-medium rounded-xl border transition-all ${
-              filter === f
-                ? 'bg-blue-500/20 text-blue-300 border-blue-400/30'
-                : 'bg-slate-900/60 text-text-muted border-white/10 hover:border-white/20 hover:text-text-primary'
-            }`}
+            className={`px-4 py-2 text-xs font-medium rounded-xl border transition-all ${filter === f
+              ? 'bg-blue-500/20 text-blue-300 border-blue-400/30'
+              : 'bg-slate-900/60 text-text-muted border-white/10 hover:border-white/20 hover:text-text-primary'
+              }`}
           >
             {f === 'ALL' ? 'All' : f.charAt(0) + f.slice(1).toLowerCase()}
             <span className="ml-1.5 text-[10px] opacity-70">
@@ -372,10 +392,10 @@ export default function PaymentsClient() {
 
 function StatCard({ label, value, icon }: { label: string; value: string; icon: React.ReactNode }) {
   return (
-    <div className="rounded-xl border border-white/15 bg-white/5 px-3 py-2 backdrop-blur">
+    <div className="rounded-xl border border-accent/20  px-3 py-4 bg-accent/5 flex flex-col justify-between">
       <div className="flex items-center gap-1.5 mb-0.5">
         {icon}
-        <p className="text-[10px] uppercase tracking-wide text-blue-100/75">{label}</p>
+        <p className="text-sm uppercase tracking-wide text-blue-100/75">{label}</p>
       </div>
       <p className="text-sm font-semibold text-white">{value}</p>
     </div>

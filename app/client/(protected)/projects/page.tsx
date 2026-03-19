@@ -6,7 +6,29 @@ import { FiFolder, FiArrowRight, FiFilter, FiPlus } from 'react-icons/fi';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 
-export default async function ClientDashboardPage() {
+interface Project {
+  id: string;
+  name: string;
+  description: string;
+  status: string;
+  progress: number;
+  updatedAt: Date | string;
+  expectedEndDate?: Date | string | null; 
+  manager: {
+    name: string;
+  };
+  _count: {
+    milestones: number;
+    files: number;
+    changeRequests: number;
+  };
+}
+
+interface ProjectCardProps {
+  project: Project;
+}
+
+export default async function ProjectsPage() {
   const session = await auth();
 
   if (!session?.user?.id) {
@@ -21,24 +43,44 @@ export default async function ClientDashboardPage() {
   const firstName = session.user.name?.split(' ')[0] || 'there';
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 p-4 md:p-10">
             {/* Projects Overview Banner */}
-            <div className="relative overflow-hidden rounded-3xl border border-white/15 bg-gradient-to-br from-slate-900/95 via-blue-950/70 to-indigo-950/70 p-7 sm:p-10 shadow-[0_30px_80px_rgba(30,64,175,0.45)]">
-                 {/* Pattern Overlay */}
-                 <div className="absolute inset-0 opacity-[0.07]" style={{ backgroundImage: 'radial-gradient(circle at 20% 50%, white 1px, transparent 1px), radial-gradient(circle at 80% 20%, white 1px, transparent 1px)', backgroundSize: '60px 60px, 40px 40px' }} />
+      <div className="flex flex-col space-y-4 md:flex-row md:items-center md:justify-between mb-4 lg:mb-10">
 
+        <nav className="flex text-text-muted p-2 rounded-lg border border-accent/15 bg-accent/10" aria-label="Breadcrumb">
+          <ol className="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
+            <li className="inline-flex items-center">
+              <a href="/" className="inline-flex items-center text-sm font-medium text-body hover:text-fg-brand">
+                <svg className="w-4 h-4 me-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m4 12 8-8 8 8M6 10.5V19a1 1 0 0 0 1 1h3v-3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3h3a1 1 0 0 0 1-1v-8.5" /></svg>
+                Home
+              </a>
+            </li>
+            <li>
+              <div className="flex items-center space-x-1.5">
+                <svg className="w-3.5 h-3.5 rtl:rotate-180 text-body" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m9 5 7 7-7 7" /></svg>
+                <a href="#" className="inline-flex items-center text-sm font-medium text-body hover:text-fg-brand">Client</a>
+              </div>
+            </li>
+            <li aria-current="page">
+              <div className="flex items-center space-x-1.5">
+                <svg className="w-3.5 h-3.5 rtl:rotate-180 text-body" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m9 5 7 7-7 7" /></svg>
+                <span className="inline-flex items-center text-sm font-medium text-body-subtle">Your Projects</span>
+              </div>
+            </li>
+          </ol>
+        </nav>
+
+      </div>
+            <div className="relative overflow-hidden  mt-16">
+                 {/* Pattern Overlay */}
+                
                  <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-8">
 
                       {/* Left Side: Context */}
                       <div className="flex-1">
-                           <div className="flex items-center gap-2 mb-3">
-                                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                                <p className="text-text-inverse/70 text-sm font-medium uppercase tracking-wider">
-                                     Project Workspace
-                                </p>
-                           </div>
+                           
 
-                           <h1 className="text-3xl sm:text-4xl font-bold text-text-inverse tracking-tight">
+                           <h1 className="text-3xl md:text-5xl font-bold text-text-inverse tracking-tight">
                                 All Projects
                            </h1>
 
@@ -46,12 +88,7 @@ export default async function ClientDashboardPage() {
                                 Manage your active initiatives, monitor progress, and access deliverables across your entire portfolio.
                            </p>
 
-                           <div className="flex flex-wrap gap-3 mt-6">
-                                <Link href="client/book-meeting" className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white text-slate-900 text-sm font-semibold hover:bg-blue-50 transition-all shadow-lg active:scale-95">
-                                     <FiPlus className="w-4 h-4" /> Start New Project
-                                </Link>
-                               
-                           </div>
+                           
                       </div>
 
                       {/* Right Side: Quick Stats Grid */}
