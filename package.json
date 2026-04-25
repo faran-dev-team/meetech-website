@@ -2,14 +2,18 @@
   "name": "company",
   "version": "0.1.0",
   "private": true,
-  "description": "Meetech website",
-  "homepage": "https://github.com/tanzeelnaveed8/meetech-website#readme",
+  "description": "Meetech Development — High-Performance Digital Products",
+  "homepage": "https://github.com/faran-dev-team/meetech-website#readme",
   "bugs": {
-    "url": "https://github.com/tanzeelnaveed8/meetech-website/issues"
+    "url": "https://github.com/faran-dev-team/meetech-website/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/tanzeelnaveed8/meetech-website.git"
+    "url": "git+https://github.com/faran-dev-team/meetech-website.git"
+  },
+  "engines": {
+    "node": ">=22.0.0",
+    "npm": ">=10.0.0"
   },
   "license": "ISC",
   "author": "",
