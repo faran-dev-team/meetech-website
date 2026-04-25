@@ -34,8 +34,17 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
-.env*
+# env files — block all local/secret variants, but allow the example template
+.env
+.env.local
+.env.development
+.env.development.local
+.env.test
+.env.test.local
+.env.production
+.env.production.local
+# explicitly allow the template file
+!.env.example
 
 # vercel
 .vercel

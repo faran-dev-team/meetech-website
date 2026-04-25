@@ -2,6 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 
 interface InsightCard {
@@ -87,10 +88,13 @@ const InsightCardComponent = ({ type, title, image, link, tags }: InsightCard) =
       >
         {/* Background Image with Zoom Effect */}
         <div className="absolute inset-0 overflow-hidden">
-          <img
+          <Image
             src={image}
             alt={title}
-            className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+            fill
+            sizes="(max-width: 768px) 50vw, (max-width: 1280px) 33vw, 25vw"
+            className="object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+            loading="lazy"
           />
           {/* Dark Gradient Overlay */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/70 to-black/30" />

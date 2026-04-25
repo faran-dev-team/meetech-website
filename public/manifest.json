@@ -1,0 +1,26 @@
+{
+  "name": "Meetech Development",
+  "short_name": "Meetech",
+  "description": "High-Performance Digital Products — web apps, mobile apps, SaaS, MVPs, and AI tools.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#020617",
+  "theme_color": "#2563eb",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/iconlight.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/iconlight.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "categories": ["business", "technology"],
+  "lang": "en-US"
+}

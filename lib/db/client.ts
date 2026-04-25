@@ -10,4 +10,6 @@ export const prisma =
     log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
   })
 
-if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
+// Always cache the client globally so Vercel serverless warm invocations
+// reuse the same connection instead of opening a new one on every request.
+globalForPrisma.prisma = prisma
