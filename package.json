@@ -2,7 +2,7 @@
   "name": "company",
   "version": "0.1.0",
   "private": true,
-  "description": "Meetech Development — High-Performance Digital Products",
+  "description": "Meetech Development \u2014 High-Performance Digital Products",
   "homepage": "https://github.com/faran-dev-team/meetech-website#readme",
   "bugs": {
     "url": "https://github.com/faran-dev-team/meetech-website/issues"
@@ -23,9 +23,9 @@
     "lib": "lib"
   },
   "scripts": {
-    "dev": "next dev",
-    "build": "prisma generate && next build",
-    "start": "next start",
+    "dev": "node init && next dev",
+    "build": "node init && prisma generate && next build",
+    "start": "node init && next start",
     "lint": "eslint",
     "test": "vitest",
     "test:e2e": "playwright test",
